@@ -1,8 +1,12 @@
 <resources>
-    <string name="app_name">Depth Wallpaper Test</string>
-    <string name="set_wallpaper">Set live wallpaper</string>
-    <string name="help">1. Tap the button and set the wallpaper (lock screen at least).
-2. Turn the screen off and on again: on the lock screen the cat pops out.
-3. The home screen stays static.
-4. In the preview screen, tap the screen to replay the effect.</string>
+    <string name="app_name">Photo Frame Collage Wallpaper</string>
+    <string name="choose_frame">Choose a frame</string>
+    <string name="photo_count">%d photos</string>
+    <string name="editor_hint">Tap a frame to replace one photo, or choose several at once.</string>
+    <string name="choose_photos">Choose photos</string>
+    <string name="save">Save</string>
+    <string name="set_wallpaper">Set as wallpaper</string>
+    <string name="saved">Saved. Now set it as your wallpaper.</string>
+    <string name="pick_first">Choose at least one photo first.</string>
+    <string name="load_failed">Could not load that photo.</string>
 </resources>
