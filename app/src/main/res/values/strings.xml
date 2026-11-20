@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Depth Wallpaper Test</string>
+    <string name="set_wallpaper">Set live wallpaper</string>
+    <string name="help">1. Tap the button and set the wallpaper (lock screen at least).
+2. Turn the screen off and on again: on the lock screen the cat pops out.
+3. The home screen stays static.
+4. In the preview screen, tap the screen to replay the effect.</string>
+</resources>
