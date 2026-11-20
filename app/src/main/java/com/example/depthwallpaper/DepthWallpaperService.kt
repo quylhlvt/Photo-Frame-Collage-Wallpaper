@@ -42,6 +42,7 @@ class DepthWallpaperService : WallpaperService() {
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
         }
+        private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
         private val matrix = Matrix()
 
         private var bg: Bitmap? = null
@@ -135,6 +136,7 @@ class DepthWallpaperService : WallpaperService() {
             clockPaint.textSize = w * 0.30f
             val save = canvas.save()
             canvas.scale(extra, extra, w / 2f, h / 2f)
+            canvas.drawText(timeFormat.format(Date()), w / 2f, h * 0.38f, clockPaint)
             canvas.restoreToCount(save)
         }
 
