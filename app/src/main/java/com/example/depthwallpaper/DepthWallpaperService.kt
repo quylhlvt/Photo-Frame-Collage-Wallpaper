@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import kotlin.math.max
-import kotlin.math.sin
 
 /**
  * Two layers (background + cut-out subject) with a clock between them.
@@ -48,7 +47,7 @@ class DepthWallpaperService : WallpaperService() {
         private var bg: Bitmap? = null
         private var subject: Bitmap? = null
         private var animator: ValueAnimator? = null
-        private var progress = 1f // 1 = resting state
+        private var progress = 0f // 0 = resting state, 1 = fully zoomed in
         private var lastPopAt = 0L
 
         private val screenOnReceiver = object : BroadcastReceiver() {
@@ -72,7 +71,7 @@ class DepthWallpaperService : WallpaperService() {
         override fun onVisibilityChanged(visible: Boolean) {
             if (!visible) {
                 animator?.cancel()
-                progress = 1f // never leave the wallpaper stuck mid-zoom
+                progress = 0f // reset to resting state so next wake-up zooms in again
                 return
             }
             // Lock screen -> play the effect. Home screen -> just draw the resting state.
@@ -109,8 +108,8 @@ class DepthWallpaperService : WallpaperService() {
             val canvas = holder.lockCanvas() ?: return
             try {
                 canvas.drawColor(Color.BLACK)
-                // sin(pi * p): 0 -> 1 -> 0, so layers zoom out then come back
-                val pop = sin(Math.PI * progress).toFloat()
+                // 0 -> 1: layers zoom in and stay zoomed (no shrinking back)
+                val pop = progress
                 bg?.let { drawLayer(canvas, it, 1f + BG_POP * pop) }
                 drawClock(canvas, 1f + CLOCK_POP * pop)
                 subject?.let { drawLayer(canvas, it, 1f + SUBJECT_POP * pop) }
