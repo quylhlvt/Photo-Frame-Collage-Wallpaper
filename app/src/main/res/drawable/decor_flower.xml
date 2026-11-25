@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Replace with your own image: put decor_flower.png in res/drawable-nodpi and delete this file. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp" android:height="100dp" android:viewportWidth="100" android:viewportHeight="100">
+    <group android:pivotX="50" android:pivotY="50">
+        <path android:fillColor="#F48FB1" android:strokeColor="#1E6FA8" android:strokeWidth="2"
+            android:pathData="M50,50 m-10,0 a10,26 0 1,0 20,0 a10,26 0 1,0 -20,0 Z" />
+    </group>
+    <group android:pivotX="50" android:pivotY="50" android:rotation="60">
+        <path android:fillColor="#F8B6C9" android:strokeColor="#1E6FA8" android:strokeWidth="2"
+            android:pathData="M50,50 m-10,0 a10,26 0 1,0 20,0 a10,26 0 1,0 -20,0 Z" />
+    </group>
+    <group android:pivotX="50" android:pivotY="50" android:rotation="120">
+        <path android:fillColor="#F48FB1" android:strokeColor="#1E6FA8" android:strokeWidth="2"
+            android:pathData="M50,50 m-10,0 a10,26 0 1,0 20,0 a10,26 0 1,0 -20,0 Z" />
+    </group>
+    <path android:fillColor="#FFC107" android:pathData="M50,50 m-12,0 a12,12 0 1,0 24,0 a12,12 0 1,0 -24,0 Z" />
+</vector>

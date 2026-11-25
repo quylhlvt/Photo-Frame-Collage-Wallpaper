@@ -34,7 +34,7 @@ class DepthWallpaperService : WallpaperService() {
     override fun onCreateEngine(): Engine = DepthEngine()
 
     inner class DepthEngine : Engine() {
-        private val renderer = FrameRenderer()
+        private val renderer = FrameRenderer(this@DepthWallpaperService)
         private val store = WallpaperStore(this@DepthWallpaperService)
 
         private var mode = WallpaperMode.FRAMES

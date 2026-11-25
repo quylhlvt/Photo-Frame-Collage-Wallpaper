@@ -16,7 +16,7 @@ import kotlin.math.sin
 
 /** Phone-shaped (9:19.5) preview of a frame template. */
 class FramePreviewView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = null) : View(ctx, attrs) {
-    private val renderer = FrameRenderer()
+    private val renderer = FrameRenderer(ctx)
     private val clip = Path()
     private val bounds = RectF()
 

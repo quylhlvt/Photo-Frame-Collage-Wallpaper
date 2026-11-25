@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Replace with your own image: put decor_vinyl.png in res/drawable-nodpi and delete this file. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp" android:height="100dp" android:viewportWidth="100" android:viewportHeight="100">
+    <path android:pathData="M50,50 m-48,0 a48,48 0 1,0 96,0 a48,48 0 1,0 -96,0 Z">
+        <aapt:attr name="android:fillColor" xmlns:aapt="http://schemas.android.com/aapt">
+            <gradient android:startX="10" android:startY="10" android:endX="90" android:endY="90" android:type="linear">
+                <item android:color="#F6D6D0" android:offset="0" />
+                <item android:color="#D86AA8" android:offset="0.4" />
+                <item android:color="#8F67D6" android:offset="0.75" />
+                <item android:color="#EFEFF8" android:offset="1" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path android:fillColor="#00000000" android:strokeColor="#33FFFFFF" android:strokeWidth="1.5"
+        android:pathData="M50,50 m-38,0 a38,38 0 1,0 76,0 a38,38 0 1,0 -76,0 Z" />
+    <path android:fillColor="#00000000" android:strokeColor="#33FFFFFF" android:strokeWidth="1.5"
+        android:pathData="M50,50 m-28,0 a28,28 0 1,0 56,0 a28,28 0 1,0 -56,0 Z" />
+    <path android:fillColor="#2A2A3A" android:pathData="M50,50 m-11,0 a11,11 0 1,0 22,0 a11,11 0 1,0 -22,0 Z" />
+    <path android:fillColor="#E8EEFB" android:pathData="M50,50 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0 Z" />
+</vector>

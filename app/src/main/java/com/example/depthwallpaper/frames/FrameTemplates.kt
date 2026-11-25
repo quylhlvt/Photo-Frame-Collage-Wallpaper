@@ -21,10 +21,6 @@ enum class FrameStyle {
     THIN_WHITE,
 }
 
-/** What fills the wallpaper behind the photos, on top of the background colour. */
-enum class BgStyle { SOLID, PAPER, GRADIENT }
-
-enum class DecorKind { CLOUD, FLOWER, HEART, SPARKLE, VINYL, LIPS, PANEL }
 
 /**
  * One photo position. x/y are the centre as a fraction of the screen, [w] is the card width as a
@@ -39,13 +35,19 @@ data class Slot(
 data class Label(val text: String, val x: Float, val y: Float, val size: Float, val color: Int, val rot: Float = 0f)
 
 /**
- * A drawn decoration. x/y are the centre and [w] the width as fractions of the screen; [h] is only
- * used by PANEL (a rounded rectangle). [color] 0 means the kind's own colours.
+ * A sticker image. [drawable] is the NAME of a file in res/drawable (or drawable-nodpi): to use your
+ * own artwork, add a PNG with that name and delete the placeholder. x/y are the centre and [w] the
+ * width as fractions of the screen; the height follows the image. [tint] 0 keeps the image colours.
  */
 data class Decor(
-    val kind: DecorKind, val x: Float, val y: Float, val w: Float,
-    val rot: Float = 0f, val flip: Boolean = false, val h: Float = 0f, val color: Int = 0,
+    val drawable: String, val x: Float, val y: Float, val w: Float,
+    val rot: Float = 0f, val flip: Boolean = false, val tint: Int = 0,
+    /** true: drawn on top of the photos instead of behind them. */
+    val front: Boolean = false,
 )
+
+/** A plain rounded rectangle behind the photos, as fractions of the screen. */
+data class Panel(val x: Float, val y: Float, val w: Float, val h: Float, val color: Int)
 
 data class FrameTemplate(
     val id: String,
@@ -55,7 +57,11 @@ data class FrameTemplate(
     val defaultBg: Int = FrameRenderer.BG_COLOR,
     val labels: List<Label> = emptyList(),
     val decor: List<Decor> = emptyList(),
-    val bgStyle: BgStyle = BgStyle.SOLID,
+    val panels: List<Panel> = emptyList(),
+    /** Name of a background image drawable, on top of [defaultBg]. */
+    val bgImage: String? = null,
+    /** true: repeated as tiles (textures); false: stretched over the screen. */
+    val bgTile: Boolean = true,
     /** Text repeated over the whole background (e.g. "I love you"). */
     val bgPattern: String? = null,
     val bgPatternColor: Int = 0,
@@ -78,30 +84,30 @@ object FrameTemplates {
     }
 
     private fun lips() = listOf(
-        Decor(DecorKind.LIPS, 0.07f, 0.02f, 0.22f), Decor(DecorKind.LIPS, 0.52f, 0.03f, 0.30f, -4f),
-        Decor(DecorKind.LIPS, 0.95f, 0.01f, 0.22f, 8f), Decor(DecorKind.LIPS, 0.50f, 0.15f, 0.36f, 3f),
-        Decor(DecorKind.LIPS, 0.95f, 0.14f, 0.20f, -10f), Decor(DecorKind.LIPS, 0.06f, 0.14f, 0.18f, 14f),
-        Decor(DecorKind.LIPS, 0.12f, 0.27f, 0.20f, -6f), Decor(DecorKind.LIPS, 0.52f, 0.27f, 0.30f, 0f),
-        Decor(DecorKind.LIPS, 0.96f, 0.27f, 0.22f, 6f),
-        Decor(DecorKind.LIPS, 0.05f, 0.45f, 0.18f, 12f), Decor(DecorKind.LIPS, 0.96f, 0.43f, 0.18f, -12f),
-        Decor(DecorKind.LIPS, 0.08f, 0.66f, 0.20f, 4f), Decor(DecorKind.LIPS, 0.95f, 0.64f, 0.20f, -4f),
-        Decor(DecorKind.LIPS, 0.12f, 0.84f, 0.26f, -8f), Decor(DecorKind.LIPS, 0.52f, 0.84f, 0.30f, 3f),
-        Decor(DecorKind.LIPS, 0.92f, 0.82f, 0.22f, 6f), Decor(DecorKind.LIPS, 0.15f, 0.96f, 0.30f, 0f),
-        Decor(DecorKind.LIPS, 0.55f, 0.97f, 0.30f, -6f), Decor(DecorKind.LIPS, 0.95f, 0.95f, 0.24f, 8f),
+        Decor("decor_lips", 0.07f, 0.02f, 0.22f), Decor("decor_lips", 0.52f, 0.03f, 0.30f, -4f),
+        Decor("decor_lips", 0.95f, 0.01f, 0.22f, 8f), Decor("decor_lips", 0.50f, 0.15f, 0.36f, 3f),
+        Decor("decor_lips", 0.95f, 0.14f, 0.20f, -10f), Decor("decor_lips", 0.06f, 0.14f, 0.18f, 14f),
+        Decor("decor_lips", 0.12f, 0.27f, 0.20f, -6f), Decor("decor_lips", 0.52f, 0.27f, 0.30f, 0f),
+        Decor("decor_lips", 0.96f, 0.27f, 0.22f, 6f),
+        Decor("decor_lips", 0.05f, 0.45f, 0.18f, 12f), Decor("decor_lips", 0.96f, 0.43f, 0.18f, -12f),
+        Decor("decor_lips", 0.08f, 0.66f, 0.20f, 4f), Decor("decor_lips", 0.95f, 0.64f, 0.20f, -4f),
+        Decor("decor_lips", 0.12f, 0.84f, 0.26f, -8f), Decor("decor_lips", 0.52f, 0.84f, 0.30f, 3f),
+        Decor("decor_lips", 0.92f, 0.82f, 0.22f, 6f), Decor("decor_lips", 0.15f, 0.96f, 0.30f, 0f),
+        Decor("decor_lips", 0.55f, 0.97f, 0.30f, -6f), Decor("decor_lips", 0.95f, 0.95f, 0.24f, 8f),
         // Darker small ones at the card's corners.
-        Decor(DecorKind.LIPS, 0.20f, 0.575f, 0.16f, -8f, color = 0xFF8E1B1B.toInt()),
-        Decor(DecorKind.LIPS, 0.83f, 0.575f, 0.16f, 8f, color = 0xFF8E1B1B.toInt()),
+        Decor("decor_lips", 0.20f, 0.575f, 0.16f, -8f, tint = 0xFF8E1B1B.toInt()),
+        Decor("decor_lips", 0.83f, 0.575f, 0.16f, 8f, tint = 0xFF8E1B1B.toInt()),
     )
 
     val all: List<FrameTemplate> = listOf(
         FrameTemplate(
             "garden", "Flower garden", FrameStyle.POLAROID,
             listOf(Slot(0.42f, 0.47f, 15f, 0.68f, 0.63f), Slot(0.58f, 0.77f, -14f, 0.60f, 0.63f)),
-            defaultBg = 0xFFF1F1F1.toInt(), bgStyle = BgStyle.PAPER,
+            defaultBg = 0xFFF1F1F1.toInt(), bgImage = "bg_paper",
             decor = listOf(
-                Decor(DecorKind.FLOWER, 0.17f, 0.335f, 0.20f), Decor(DecorKind.FLOWER, 0.79f, 0.60f, 0.18f, 20f),
-                Decor(DecorKind.FLOWER, 0.12f, 0.93f, 0.28f, -10f), Decor(DecorKind.FLOWER, 0.24f, 0.955f, 0.17f, 15f),
-                Decor(DecorKind.HEART, 0.78f, 0.28f, 0.10f, 12f, color = 0xFFD94B3F.toInt()),
+                Decor("decor_flower", 0.17f, 0.335f, 0.20f, front = true), Decor("decor_flower", 0.79f, 0.60f, 0.18f, 20f, front = true),
+                Decor("decor_flower", 0.12f, 0.93f, 0.28f, -10f, front = true), Decor("decor_flower", 0.24f, 0.955f, 0.17f, 15f, front = true),
+                Decor("decor_heart", 0.78f, 0.28f, 0.10f, 12f, tint = 0xFFD94B3F.toInt(), front = true),
             ),
         ),
         FrameTemplate(
@@ -110,11 +116,11 @@ object FrameTemplates {
                 Slot(0.265f, 0.205f, 0f, 0.355f, 1.64f), Slot(0.265f, 0.505f, 0f, 0.355f, 1.64f), Slot(0.265f, 0.81f, 0f, 0.355f, 1.64f),
                 Slot(0.665f, 0.17f, 0f, 0.355f, 1.36f), Slot(0.665f, 0.45f, 0f, 0.355f, 1.62f), Slot(0.665f, 0.76f, 0f, 0.355f, 1.62f),
             ),
-            defaultBg = 0xFFE9DED8.toInt(), bgStyle = BgStyle.PAPER,
+            defaultBg = 0xFFE9DED8.toInt(), bgImage = "bg_paper",
         ),
         FrameTemplate(
             "heart", "Heart collage", FrameStyle.THIN_DARK, heartSlots(),
-            defaultBg = 0xFFEDE4DD.toInt(), bgStyle = BgStyle.PAPER,
+            defaultBg = 0xFFEDE4DD.toInt(), bgImage = "bg_paper",
             labels = listOf(Label("The Beauty Of Love", 0.50f, 0.86f, 0.075f, 0xFF222222.toInt())),
         ),
         FrameTemplate(
@@ -127,10 +133,10 @@ object FrameTemplates {
             listOf(Slot(0.33f, 0.60f, -12f, 0.42f, 1.05f), Slot(0.66f, 0.76f, -8f, 0.42f, 1.0f)),
             defaultBg = 0xFFE8EEFB.toInt(),
             decor = listOf(
-                Decor(DecorKind.VINYL, 0.52f, 0.595f, 0.46f),
-                Decor(DecorKind.SPARKLE, 0.11f, 0.485f, 0.09f, color = 0xFF8EC5DD.toInt()),
-                Decor(DecorKind.SPARKLE, 0.28f, 0.865f, 0.11f, color = 0xFF8EC5DD.toInt()),
-                Decor(DecorKind.SPARKLE, 0.93f, 0.60f, 0.05f, color = 0xFF8EC5DD.toInt()),
+                Decor("decor_vinyl", 0.52f, 0.595f, 0.46f),
+                Decor("decor_sparkle", 0.11f, 0.485f, 0.09f, tint = 0xFF8EC5DD.toInt()),
+                Decor("decor_sparkle", 0.28f, 0.865f, 0.11f, tint = 0xFF8EC5DD.toInt()),
+                Decor("decor_sparkle", 0.93f, 0.60f, 0.05f, tint = 0xFF8EC5DD.toInt()),
             ),
         ),
         FrameTemplate(
@@ -149,18 +155,20 @@ object FrameTemplates {
                 Slot(0.265f, 0.785f, 0f, 0.255f, 0.95f), Slot(0.535f, 0.785f, 0f, 0.255f, 0.95f),
             ),
             defaultBg = 0xFFFAD5E0.toInt(),
+            panels = listOf(
+                Panel(0.40f, 0.404f, 0.57f, 0.135f, DARK),
+                Panel(0.62f, 0.593f, 0.57f, 0.135f, DARK),
+                Panel(0.40f, 0.785f, 0.57f, 0.135f, DARK),
+            ),
             decor = listOf(
-                Decor(DecorKind.PANEL, 0.40f, 0.404f, 0.57f, h = 0.135f, color = DARK),
-                Decor(DecorKind.PANEL, 0.62f, 0.593f, 0.57f, h = 0.135f, color = DARK),
-                Decor(DecorKind.PANEL, 0.40f, 0.785f, 0.57f, h = 0.135f, color = DARK),
-                Decor(DecorKind.HEART, 0.10f, 0.97f, 0.12f, -10f, color = 0xFFE96B6B.toInt()),
-                Decor(DecorKind.HEART, 0.26f, 0.95f, 0.15f, 8f, color = 0xFFF2A0B6.toInt()),
-                Decor(DecorKind.HEART, 0.50f, 0.975f, 0.10f, 0f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.HEART, 0.63f, 0.915f, 0.18f, -12f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.HEART, 0.82f, 0.90f, 0.30f, 10f, color = 0xFFE05A55.toInt()),
-                Decor(DecorKind.HEART, 0.93f, 0.965f, 0.13f, 0f, color = 0xFFE96B6B.toInt()),
-                Decor(DecorKind.HEART, 0.90f, 0.74f, 0.09f, 6f, color = 0xFFF2B8A8.toInt()),
-                Decor(DecorKind.HEART, 0.89f, 0.45f, 0.10f, 6f, color = 0xFFF7C2CE.toInt()),
+                Decor("decor_heart", 0.10f, 0.97f, 0.12f, -10f, tint = 0xFFE96B6B.toInt()),
+                Decor("decor_heart", 0.26f, 0.95f, 0.15f, 8f, tint = 0xFFF2A0B6.toInt()),
+                Decor("decor_heart", 0.50f, 0.975f, 0.10f, 0f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_heart", 0.63f, 0.915f, 0.18f, -12f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_heart", 0.82f, 0.90f, 0.30f, 10f, tint = 0xFFE05A55.toInt()),
+                Decor("decor_heart", 0.93f, 0.965f, 0.13f, 0f, tint = 0xFFE96B6B.toInt()),
+                Decor("decor_heart", 0.90f, 0.74f, 0.09f, 6f, tint = 0xFFF2B8A8.toInt()),
+                Decor("decor_heart", 0.89f, 0.45f, 0.10f, 6f, tint = 0xFFF7C2CE.toInt()),
             ),
         ),
         FrameTemplate(
@@ -168,13 +176,13 @@ object FrameTemplates {
             listOf(
                 Slot(0.50f, 0.455f, 0f, 0.66f, 0.50f), Slot(0.50f, 0.627f, 0f, 0.66f, 0.50f), Slot(0.50f, 0.793f, 0f, 0.66f, 0.50f),
             ),
-            defaultBg = 0xFFCFE3F8.toInt(), bgStyle = BgStyle.GRADIENT,
+            defaultBg = 0xFFCFE3F8.toInt(), bgImage = "bg_gradient_blue", bgTile = false,
             decor = listOf(
-                Decor(DecorKind.SPARKLE, 0.10f, 0.095f, 0.20f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.SPARKLE, 0.78f, 0.13f, 0.16f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.SPARKLE, 0.72f, 0.24f, 0.11f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.SPARKLE, 0.05f, 0.40f, 0.07f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.SPARKLE, 0.04f, 0.86f, 0.08f, color = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.10f, 0.095f, 0.20f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.78f, 0.13f, 0.16f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.72f, 0.24f, 0.11f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.05f, 0.40f, 0.07f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.04f, 0.86f, 0.08f, tint = 0xFFFFFFFF.toInt()),
             ),
         ),
         FrameTemplate(
@@ -182,11 +190,11 @@ object FrameTemplates {
             listOf(Slot(0.50f, 0.555f, 0f, 0.52f, 1.45f)),
             defaultBg = 0xFFF5DDD9.toInt(),
             decor = listOf(
-                Decor(DecorKind.SPARKLE, 0.28f, 0.865f, 0.06f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.SPARKLE, 0.50f, 0.90f, 0.05f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.SPARKLE, 0.72f, 0.865f, 0.06f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.HEART, 0.39f, 0.84f, 0.05f, color = 0xFFFFFFFF.toInt()),
-                Decor(DecorKind.HEART, 0.62f, 0.84f, 0.05f, color = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.28f, 0.865f, 0.06f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.50f, 0.90f, 0.05f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_sparkle", 0.72f, 0.865f, 0.06f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_heart", 0.39f, 0.84f, 0.05f, tint = 0xFFFFFFFF.toInt()),
+                Decor("decor_heart", 0.62f, 0.84f, 0.05f, tint = 0xFFFFFFFF.toInt()),
             ),
         ),
         FrameTemplate(
@@ -203,7 +211,7 @@ object FrameTemplates {
             listOf(Slot(0.50f, 0.58f, 0f, 0.64f, 1.95f)),
             defaultBg = CREAM,
             decor = listOf(
-                Decor(DecorKind.CLOUD, 0.17f, 0.285f, 0.34f), Decor(DecorKind.CLOUD, 0.83f, 0.275f, 0.30f, flip = true),
+                Decor("decor_cloud", 0.17f, 0.285f, 0.34f), Decor("decor_cloud", 0.83f, 0.275f, 0.30f, flip = true),
             ),
             labels = listOf(Label("The Beauty", 0.50f, 0.89f, 0.075f, PINK_TEXT)),
         ),

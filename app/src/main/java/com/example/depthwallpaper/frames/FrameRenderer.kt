@@ -19,7 +19,9 @@ import kotlin.math.abs
 import kotlin.math.max
 
 /** Draws a frame template with its photos. Shared by the wallpaper and the in-app previews. */
-class FrameRenderer {
+class FrameRenderer(private val ctx: android.content.Context) {
+    private val assets = DecorAssets(ctx)
+
     private val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
     private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
@@ -47,6 +49,7 @@ class FrameRenderer {
     }
     private var overlay: Bitmap? = null
     private var backdrop: Bitmap? = null
+    private var front: Bitmap? = null
     private val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     private val matrix = Matrix()
     private val rect = RectF()
@@ -124,6 +127,7 @@ class FrameRenderer {
             cT = t; cPhotos = photos; cW = w; cHint = hint; cAdj = adjKey
             overlay = buildOverlay(t, w, h)
             backdrop = buildBackdrop(t, w, h)
+            front = buildFront(t, w, h)
         }
         if (bg == null) {
             bgSrc = null; bgScaled = null
@@ -187,6 +191,10 @@ class FrameRenderer {
                 canvas.drawRect(-half, -halfH, half, halfH, selectPaint)
             }
             canvas.restoreToCount(save)
+        }
+        front?.let { f ->
+            overlayPaint.alpha = (255 * progress.coerceIn(0f, 1f)).toInt()
+            canvas.drawBitmap(f, 0f, 0f, overlayPaint)
         }
     }
 
@@ -259,172 +267,69 @@ class FrameRenderer {
         }
     }
 
+    private val decorPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+
     private fun drawDecor(canvas: Canvas, d: Decor, w: Float, h: Float) {
-        val cx = d.x * w
-        val cy = d.y * h
-        val dw = d.w * w
+        val bmp = assets.bitmap(d.drawable, (d.w * w).toInt().coerceAtLeast(1)) ?: return
+        decorPaint.colorFilter = if (d.tint != 0) android.graphics.PorterDuffColorFilter(d.tint, android.graphics.PorterDuff.Mode.SRC_IN) else null
         val save = canvas.save()
-        canvas.translate(cx, cy)
+        canvas.translate(d.x * w, d.y * h)
         canvas.rotate(d.rot)
         if (d.flip) canvas.scale(-1f, 1f)
-        when (d.kind) {
-            DecorKind.CLOUD -> drawCloudShape(canvas, dw)
-            DecorKind.FLOWER -> drawFlower(canvas, dw)
-            DecorKind.HEART -> drawHeart(canvas, dw, if (d.color != 0) d.color else 0xFFE57373.toInt())
-            DecorKind.SPARKLE -> drawSparkle(canvas, dw, if (d.color != 0) d.color else Color.WHITE)
-            DecorKind.VINYL -> drawVinyl(canvas, dw)
-            DecorKind.LIPS -> drawLips(canvas, dw, if (d.color != 0) d.color else 0xFFC62828.toInt())
-            DecorKind.PANEL -> {
-                cloudPaint.color = if (d.color != 0) d.color else Color.GRAY
-                rect.set(-dw / 2f, -d.h * h / 2f, dw / 2f, d.h * h / 2f)
-                canvas.drawRoundRect(rect, 6f, 6f, cloudPaint)
-            }
-        }
+        canvas.drawBitmap(bmp, -bmp.width / 2f, -bmp.height / 2f, decorPaint)
         canvas.restoreToCount(save)
     }
 
-    private fun drawCloudShape(canvas: Canvas, w: Float) {
-        val blobs = floatArrayOf(
-            -0.34f, 0.10f, 0.20f, -0.14f, -0.06f, 0.27f, 0.14f, 0.00f, 0.25f, 0.36f, 0.12f, 0.17f, 0.00f, 0.14f, 0.30f,
-        )
-        cloudPaint.color = 0xFFF1B7C6.toInt()
-        for (k in 0 until 5) canvas.drawCircle(blobs[k * 3] * w, blobs[k * 3 + 1] * w, blobs[k * 3 + 2] * w, cloudPaint)
-        cloudPaint.color = 0xFFFBE4E9.toInt()
-        for (k in 0 until 5) canvas.drawCircle(blobs[k * 3] * w - w * 0.02f, blobs[k * 3 + 1] * w - w * 0.035f, blobs[k * 3 + 2] * w * 0.86f, cloudPaint)
-    }
-
-    private fun drawFlower(canvas: Canvas, w: Float) {
-        val petal = w * 0.30f
-        for (k in 0 until 6) {
-            val a = Math.toRadians(k * 60.0)
-            val px = (Math.cos(a) * w * 0.26).toFloat()
-            val py = (Math.sin(a) * w * 0.26).toFloat()
-            val save = canvas.save()
-            canvas.translate(px, py)
-            canvas.rotate(k * 60f)
-            rect.set(-petal * 0.75f, -petal * 0.45f, petal * 0.75f, petal * 0.45f)
-            cloudPaint.style = Paint.Style.FILL
-            cloudPaint.color = if (k % 2 == 0) 0xFFF48FB1.toInt() else 0xFFF8B6C9.toInt()
-            canvas.drawOval(rect, cloudPaint)
-            cloudPaint.style = Paint.Style.STROKE
-            cloudPaint.strokeWidth = w * 0.02f
-            cloudPaint.color = 0xFF1E6FA8.toInt()
-            canvas.drawOval(rect, cloudPaint)
-            cloudPaint.style = Paint.Style.FILL
-            canvas.restoreToCount(save)
-        }
-        cloudPaint.color = 0xFFFFC107.toInt()
-        canvas.drawCircle(0f, 0f, w * 0.17f, cloudPaint)
-        cloudPaint.color = 0xFFFFE082.toInt()
-        canvas.drawCircle(-w * 0.04f, -w * 0.04f, w * 0.07f, cloudPaint)
-    }
-
-    private fun drawHeart(canvas: Canvas, w: Float, color: Int) {
-        val r = w / 2f
-        path.reset()
-        path.moveTo(0f, 0.9f * r)
-        path.cubicTo(-1.3f * r, -0.2f * r, -0.5f * r, -1.1f * r, 0f, -0.4f * r)
-        path.cubicTo(0.5f * r, -1.1f * r, 1.3f * r, -0.2f * r, 0f, 0.9f * r)
-        path.close()
-        cloudPaint.style = Paint.Style.FILL
-        cloudPaint.color = color
-        canvas.drawPath(path, cloudPaint)
-    }
-
-    private fun drawSparkle(canvas: Canvas, w: Float, color: Int) {
-        val r = w / 2f
-        path.reset()
-        path.moveTo(0f, -r)
-        path.quadTo(0.10f * r, -0.10f * r, r, 0f)
-        path.quadTo(0.10f * r, 0.10f * r, 0f, r)
-        path.quadTo(-0.10f * r, 0.10f * r, -r, 0f)
-        path.quadTo(-0.10f * r, -0.10f * r, 0f, -r)
-        path.close()
-        cloudPaint.style = Paint.Style.FILL
-        cloudPaint.color = color
-        canvas.drawPath(path, cloudPaint)
-    }
-
-    private fun drawVinyl(canvas: Canvas, w: Float) {
-        val r = w / 2f
-        cloudPaint.style = Paint.Style.FILL
-        cloudPaint.shader = LinearGradient(-r, -r, r, r,
-            intArrayOf(0xFFF6D6D0.toInt(), 0xFFD86AA8.toInt(), 0xFF8F67D6.toInt(), 0xFFEFEFF8.toInt()), null, Shader.TileMode.CLAMP)
-        canvas.drawCircle(0f, 0f, r, cloudPaint)
-        cloudPaint.shader = null
-        cloudPaint.color = 0x33FFFFFF
-        for (k in 1..4) canvas.drawCircle(0f, 0f, r * (0.45f + k * 0.11f), cloudPaint)
-        cloudPaint.color = 0xFF2A2A3A.toInt()
-        canvas.drawCircle(0f, 0f, r * 0.22f, cloudPaint)
-        cloudPaint.color = 0xFFE8EEFB.toInt()
-        canvas.drawCircle(0f, 0f, r * 0.07f, cloudPaint)
-    }
-
-    private fun drawLips(canvas: Canvas, w: Float, color: Int) {
-        val u = w
-        path.reset()
-        path.moveTo(-0.5f * u, 0f)
-        path.cubicTo(-0.36f * u, -0.30f * u, -0.12f * u, -0.32f * u, 0f, -0.13f * u)
-        path.cubicTo(0.12f * u, -0.32f * u, 0.36f * u, -0.30f * u, 0.5f * u, 0f)
-        path.cubicTo(0.32f * u, 0.32f * u, -0.32f * u, 0.32f * u, -0.5f * u, 0f)
-        path.close()
-        cloudPaint.style = Paint.Style.FILL
-        cloudPaint.color = color
-        canvas.drawPath(path, cloudPaint)
-        cloudPaint.style = Paint.Style.STROKE
-        cloudPaint.strokeWidth = u * 0.015f
-        cloudPaint.color = 0x55000000
-        canvas.drawLine(-0.46f * u, 0f, 0.46f * u, 0f, cloudPaint)
-        cloudPaint.style = Paint.Style.FILL
-    }
-
-    /** Opaque-ish art behind the photos: paper grain, gradient, repeated text, panels. */
+    /** Images and shapes behind the photos: background texture, repeated text, panels. */
     private fun buildBackdrop(t: FrameTemplate, w: Float, h: Float): Bitmap? {
-        val hasPanels = t.decor.any { it.kind == DecorKind.PANEL }
-        if (t.bgStyle == BgStyle.SOLID && t.bgPattern == null && !hasPanels) return null
+        if (t.bgImage == null && t.bgPattern == null && t.panels.isEmpty()) return null
         val bmp = Bitmap.createBitmap(w.toInt(), h.toInt(), Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
-        when (t.bgStyle) {
-            BgStyle.PAPER -> {
-                val rnd = java.util.Random(7)
-                val p = Paint(Paint.ANTI_ALIAS_FLAG).apply { strokeWidth = max(1f, w * 0.002f) }
-                for (n in 0 until 1800) {
-                    val x = rnd.nextFloat() * w
-                    val y = rnd.nextFloat() * h
-                    val a = rnd.nextFloat() * 6.283f
-                    val len = w * (0.01f + rnd.nextFloat() * 0.03f)
-                    p.color = if (n % 2 == 0) 0x14000000 else 0x55FFFFFF
-                    c.drawLine(x, y, x + kotlin.math.cos(a) * len, y + kotlin.math.sin(a) * len, p)
+        t.bgImage?.let { name ->
+            if (t.bgTile) {
+                // Tiles keep their pixel size, scaled up on big screens.
+                val tile = assets.bitmap(name, (256 * max(1f, w / 720f)).toInt())
+                if (tile != null) {
+                    val p = Paint().apply { shader = android.graphics.BitmapShader(tile, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT) }
+                    c.drawRect(0f, 0f, w, h, p)
                 }
+            } else {
+                assets.bitmapExact(name, w.toInt(), h.toInt())?.let { c.drawBitmap(it, 0f, 0f, null) }
             }
-            BgStyle.GRADIENT -> {
-                val p = Paint().apply { shader = LinearGradient(0f, 0f, 0f, h, 0x00FFFFFF, 0xFFFFFFFF.toInt(), Shader.TileMode.CLAMP) }
-                c.drawRect(0f, 0f, w, h, p)
-            }
-            BgStyle.SOLID -> Unit
         }
         t.bgPattern?.let { text ->
             scriptPaint.color = t.bgPatternColor
             scriptPaint.textSize = w * 0.085f
-            var row = 0
             var y = h * 0.055f
             while (y < h) {
                 for (col in 0 until 3) c.drawText(text, w * (0.17f + 0.33f * col), y, scriptPaint)
                 y += h * 0.0545f
-                row++
             }
         }
-        for (d in t.decor) if (d.kind == DecorKind.PANEL) drawDecor(c, d, w, h)
+        for (pn in t.panels) {
+            cloudPaint.style = Paint.Style.FILL
+            cloudPaint.color = pn.color
+            rect.set((pn.x - pn.w / 2f) * w, (pn.y - pn.h / 2f) * h, (pn.x + pn.w / 2f) * w, (pn.y + pn.h / 2f) * h)
+            c.drawRoundRect(rect, 6f, 6f, cloudPaint)
+        }
+        return bmp
+    }
+
+    /** Stickers marked `front`, drawn over the photos. */
+    private fun buildFront(t: FrameTemplate, w: Float, h: Float): Bitmap? {
+        if (t.decor.none { it.front }) return null
+        val bmp = Bitmap.createBitmap(w.toInt(), h.toInt(), Bitmap.Config.ARGB_8888)
+        val c = Canvas(bmp)
+        for (d in t.decor) if (d.front) drawDecor(c, d, w, h)
         return bmp
     }
 
     /** Stickers and handwritten labels, drawn once into a screen-sized bitmap and faded in. */
     private fun buildOverlay(t: FrameTemplate, w: Float, h: Float): Bitmap? {
-        val stickers = t.decor.filter { it.kind != DecorKind.PANEL }
-        if (t.labels.isEmpty() && stickers.isEmpty()) return null
+        if (t.labels.isEmpty() && t.decor.none { !it.front }) return null
         val bmp = Bitmap.createBitmap(w.toInt(), h.toInt(), Bitmap.Config.ARGB_8888)
         val c = Canvas(bmp)
-        for (d in stickers) drawDecor(c, d, w, h)
+        for (d in t.decor) if (!d.front) drawDecor(c, d, w, h)
         for (l in t.labels) {
             scriptPaint.color = l.color
             scriptPaint.textSize = l.size * w

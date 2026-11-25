@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The wallpaper looks decor images up by name, so the release build must not strip them. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/decor_*,@drawable/bg_*" />
