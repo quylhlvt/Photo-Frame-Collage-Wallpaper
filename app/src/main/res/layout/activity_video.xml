@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
+
+        <TextView
+            style="@style/HintText"
+            android:text="@string/mode_video_desc" />
+
+        <com.example.depthwallpaper.core.PhoneImageView
+            android:id="@+id/preview"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginVertical="8dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/onlineTitle"
+            style="@style/HintText"
+            android:text="@string/online_videos"
+            android:visibility="gone" />
+
+        <HorizontalScrollView
+            android:id="@+id/onlineScroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/onlineRow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/progressText"
+            style="@style/HintText"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnPick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/choose_video" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save" />
+
+        <Button
+            android:id="@+id/btnSet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_wallpaper"
+            android:visibility="gone" />
+    </LinearLayout>
+</layout>

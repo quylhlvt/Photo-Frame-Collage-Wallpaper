@@ -1,15 +1,16 @@
-package com.example.depthwallpaper
+package com.example.depthwallpaper.frames
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
+import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 
 /** Phone-shaped (9:19.5) preview of a frame template. */
-class FramePreviewView(ctx: Context) : View(ctx) {
+class FramePreviewView @JvmOverloads constructor(ctx: Context, attrs: AttributeSet? = null) : View(ctx, attrs) {
     private val renderer = FrameRenderer()
     private val clip = Path()
     private val bounds = RectF()
@@ -17,6 +18,10 @@ class FramePreviewView(ctx: Context) : View(ctx) {
     var template: FrameTemplate = FrameTemplates.all[0]
         set(v) { field = v; invalidate() }
     var photos: List<Bitmap?> = emptyList()
+        set(v) { field = v; invalidate() }
+    var bgColor: Int = FrameRenderer.BG_COLOR
+        set(v) { field = v; invalidate() }
+    var bgImage: Bitmap? = null
         set(v) { field = v; invalidate() }
     var showHint = false
     var onSlotTap: ((Int) -> Unit)? = null
@@ -33,7 +38,7 @@ class FramePreviewView(ctx: Context) : View(ctx) {
         clip.reset()
         clip.addRoundRect(bounds, w * 0.08f, w * 0.08f, Path.Direction.CW)
         canvas.clipPath(clip)
-        renderer.draw(canvas, w, h, template, photos, hint = showHint)
+        renderer.draw(canvas, w, h, template, photos, bg = bgImage, hint = showHint, bgColor = bgColor)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

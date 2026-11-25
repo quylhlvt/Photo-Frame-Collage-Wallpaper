@@ -1,4 +1,5 @@
-package com.example.depthwallpaper
+package com.example.depthwallpaper.frames
+
 
 enum class FrameStyle { POLAROID, TILE }
 

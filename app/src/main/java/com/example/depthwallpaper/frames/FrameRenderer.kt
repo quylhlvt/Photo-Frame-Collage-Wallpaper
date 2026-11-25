@@ -1,4 +1,4 @@
-package com.example.depthwallpaper
+package com.example.depthwallpaper.frames
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -20,7 +20,6 @@ class FrameRenderer {
     private val bitmapPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
     private val cardPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
-        setShadowLayer(8f, 0f, 3f, 0x55000000)
     }
     private val emptyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFD9D9D9.toInt() }
     private val plusPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -57,49 +56,94 @@ class FrameRenderer {
         return -1
     }
 
-    /**
-     * @param progress 1 = final layout, 0 = every card stacked in the centre.
-     * @param bg optional background picture; otherwise a dark grey is used.
-     * @param hint draw a "+" on empty slots.
-     */
-    fun draw(
-        canvas: Canvas, w: Float, h: Float, t: FrameTemplate, photos: List<Bitmap?>,
-        progress: Float = 1f, bg: Bitmap? = null, hint: Boolean = false,
-    ) {
-        canvas.drawColor(BG_COLOR)
-        if (bg != null) {
+    // Cards (white frame + photo + shadow) are rendered once into small bitmaps and the
+    // background is pre-scaled to the screen, so an animation frame only draws ready-made bitmaps.
+    private var cards: List<Bitmap> = emptyList()
+    private var cT: FrameTemplate? = null
+    private var cPhotos: List<Bitmap?>? = null
+    private var cW = 0f
+    private var cHint = false
+    private var bgSrc: Bitmap? = null
+    private var bgScaled: Bitmap? = null
+    private var bgW = 0
+    private var bgH = 0
+    private var timeText = ""
+    private var timeAt = 0L
+
+    /** Build the caches. Cheap when nothing changed; call it before animating. */
+    fun prepare(w: Float, h: Float, t: FrameTemplate, photos: List<Bitmap?>, bg: Bitmap?, hint: Boolean = false) {
+        if (!(cT === t && cPhotos === photos && cW == w && cHint == hint)) {
+            cards = t.slots.mapIndexed { i, s ->
+                val cw = cardW(s, w)
+                val ch = cardH(t, s, w)
+                val pad = (cw * 0.06f).coerceAtLeast(6f)
+                val bmp = Bitmap.createBitmap((cw + 2 * pad).toInt(), (ch + 2 * pad).toInt(), Bitmap.Config.ARGB_8888)
+                val c = Canvas(bmp)
+                c.translate(bmp.width / 2f, bmp.height / 2f)
+                cardPaint.setShadowLayer(cw * 0.03f, 0f, cw * 0.012f, 0x55000000)
+                drawCardContent(c, t, s, photos.getOrNull(i), w, hint)
+                bmp
+            }
+            cT = t; cPhotos = photos; cW = w; cHint = hint
+        }
+        if (bg == null) {
+            bgSrc = null; bgScaled = null
+        } else if (bgSrc !== bg || bgW != w.toInt() || bgH != h.toInt()) {
+            bgW = w.toInt(); bgH = h.toInt()
+            val out = Bitmap.createBitmap(bgW, bgH, Bitmap.Config.ARGB_8888)
             val base = max(w / bg.width, h / bg.height) // centerCrop
             matrix.reset()
             matrix.postScale(base, base)
             matrix.postTranslate((w - bg.width * base) / 2f, (h - bg.height * base) / 2f)
-            canvas.drawBitmap(bg, matrix, bitmapPaint)
+            Canvas(out).drawBitmap(bg, matrix, bitmapPaint)
+            bgSrc = bg; bgScaled = out
+        }
+    }
+
+    /**
+     * @param progress 1 = final layout, 0 = every card stacked in the centre.
+     * @param bg optional background picture; otherwise [bgColor] is used.
+     * @param hint draw a "+" on empty slots.
+     */
+    fun draw(
+        canvas: Canvas, w: Float, h: Float, t: FrameTemplate, photos: List<Bitmap?>,
+        progress: Float = 1f, bg: Bitmap? = null, hint: Boolean = false, bgColor: Int = BG_COLOR,
+    ) {
+        prepare(w, h, t, photos, bg, hint)
+        canvas.drawColor(bgColor)
+        bgScaled?.let { canvas.drawBitmap(it, 0f, 0f, null) }
+        val now = System.currentTimeMillis()
+        if (now - timeAt > 1000L || timeText.isEmpty()) {
+            timeText = timeFormat.format(Date(now)); timeAt = now
         }
         clockPaint.textSize = w * 0.30f
-        canvas.drawText(timeFormat.format(Date()), w / 2f, h * 0.20f, clockPaint)
+        canvas.drawText(timeText, w / 2f, h * 0.20f, clockPaint)
 
         val n = t.slots.size
         val stagger = if (n > 1) STAGGER else 0f
         for (i in 0 until n) {
             val s = t.slots[i]
+            val card = cards[i]
             val p = ((progress - i * stagger) / (1f - (n - 1) * stagger)).coerceIn(0f, 1f)
             val e = 1f - (1f - p) * (1f - p) * (1f - p) // ease-out
             val cx = w * 0.5f + (w * s.x - w * 0.5f) * e
             val cy = h * START_Y + (h * s.y - h * START_Y) * e
             val sc = 1.15f + (1f - 1.15f) * e
-            drawCard(canvas, t, s, photos.getOrNull(i), cx, cy, s.rot * e, sc, w, hint)
+            val save = canvas.save()
+            canvas.translate(cx, cy)
+            canvas.rotate(s.rot * e)
+            canvas.scale(sc, sc)
+            canvas.drawBitmap(card, -card.width / 2f, -card.height / 2f, bitmapPaint)
+            canvas.restoreToCount(save)
         }
     }
 
-    private fun drawCard(
-        canvas: Canvas, t: FrameTemplate, s: Slot, pic: Bitmap?,
-        cx: Float, cy: Float, rot: Float, sc: Float, w: Float, hint: Boolean,
+    /** Draws one card centred on the canvas origin. */
+    private fun drawCardContent(
+        canvas: Canvas, t: FrameTemplate, s: Slot, pic: Bitmap?, w: Float, hint: Boolean,
     ) {
         val cw = cardW(s, w)
         val ch = cardH(t, s, w)
-        val save = canvas.save()
-        canvas.translate(cx, cy)
-        canvas.rotate(rot)
-        canvas.scale(sc, sc)
         if (t.style == FrameStyle.POLAROID) {
             rect.set(-cw / 2f, -ch / 2f, cw / 2f, ch / 2f)
             canvas.drawRoundRect(rect, 4f, 4f, cardPaint)
@@ -126,7 +170,6 @@ class FrameRenderer {
             }
         }
         canvas.restoreToCount(clip)
-        canvas.restoreToCount(save)
     }
 
     private fun cropSrc(bmp: Bitmap, dw: Float, dh: Float) {

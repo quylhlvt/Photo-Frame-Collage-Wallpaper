@@ -1,5 +1,6 @@
-package com.example.depthwallpaper
+package com.example.depthwallpaper.core
 
+import com.example.depthwallpaper.R
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -14,6 +15,13 @@ import kotlin.math.max
 import kotlin.math.min
 
 object ImageUtils {
+    /** Decode size for a collage of [count] photos: fewer photos -> bigger cells -> more pixels. */
+    fun sideForCount(count: Int): Int = when {
+        count <= 2 -> 1600
+        count <= 4 -> 1200
+        else -> 900
+    }
+
     /** Decode an image picked by the user, downsampled to ~[maxSide] and rotated per EXIF. */
     fun decodeUri(ctx: Context, uri: Uri, maxSide: Int = 1024): Bitmap? = runCatching {
         val r = ctx.contentResolver

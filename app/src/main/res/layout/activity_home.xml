@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:text="@string/app_name"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/cardStatic"
+                style="@style/Card">
+
+                <TextView
+                    style="@style/CardTitle"
+                    android:text="@string/mode_static" />
+
+                <TextView
+                    style="@style/CardDesc"
+                    android:text="@string/mode_static_desc" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cardFrames"
+                style="@style/Card">
+
+                <TextView
+                    style="@style/CardTitle"
+                    android:text="@string/mode_frames" />
+
+                <TextView
+                    style="@style/CardDesc"
+                    android:text="@string/mode_frames_desc" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cardVideo"
+                style="@style/Card">
+
+                <TextView
+                    style="@style/CardTitle"
+                    android:text="@string/mode_video" />
+
+                <TextView
+                    style="@style/CardDesc"
+                    android:text="@string/mode_video_desc" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</layout>

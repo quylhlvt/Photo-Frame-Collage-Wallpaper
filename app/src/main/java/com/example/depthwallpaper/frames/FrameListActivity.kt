@@ -1,31 +1,19 @@
-package com.example.depthwallpaper
+package com.example.depthwallpaper.frames
 
-import android.app.Activity
 import android.content.Intent
-import android.graphics.Typeface
-import android.os.Bundle
 import android.view.Gravity
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
+import com.example.depthwallpaper.R
+import com.example.depthwallpaper.base.AbsBaseActivity
+import com.example.depthwallpaper.core.SamplePhoto
+import com.example.depthwallpaper.databinding.ActivityFrameListBinding
 
-/** List of frames; tap one to open the editor. */
-class MainActivity : Activity() {
-    private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
+/** Mode 2: list of frames; tap one to open the editor. */
+class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>() {
+    override fun getLayoutId() = R.layout.activity_frame_list
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val list = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(16), dp(16), dp(16), dp(16))
-        }
-        list.addView(TextView(this).apply {
-            text = getString(R.string.choose_frame)
-            textSize = 22f
-            typeface = Typeface.DEFAULT_BOLD
-            setPadding(0, 0, 0, dp(12))
-        })
-
+    override fun initView() {
         val sample = SamplePhoto.build(resources, 4)
         for (frame in FrameTemplates.all) {
             val row = LinearLayout(this).apply {
@@ -34,7 +22,7 @@ class MainActivity : Activity() {
                 setPadding(0, dp(8), 0, dp(8))
                 isClickable = true
                 setOnClickListener {
-                    startActivity(Intent(this@MainActivity, EditorActivity::class.java).putExtra(EXTRA_FRAME, frame.id))
+                    startActivity(Intent(this@FrameListActivity, EditorActivity::class.java).putExtra(EXTRA_FRAME, frame.id))
                 }
             }
             row.addView(FramePreviewView(this).apply {
@@ -51,13 +39,11 @@ class MainActivity : Activity() {
                     alpha = 0.6f
                 })
             })
-            list.addView(row)
+            binding.list.addView(row)
         }
-        setContentView(ScrollView(this).apply {
-            fitsSystemWindows = true
-            addView(list)
-        })
     }
+
+    override fun initAction() {}
 
     companion object {
         const val EXTRA_FRAME = "frame"
