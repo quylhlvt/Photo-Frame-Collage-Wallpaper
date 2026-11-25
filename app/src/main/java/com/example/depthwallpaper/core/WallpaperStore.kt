@@ -1,6 +1,7 @@
 package com.example.depthwallpaper.core
 
 import com.example.depthwallpaper.frames.*
+import com.example.depthwallpaper.staticphoto.CellAdjust
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -16,6 +17,7 @@ data class SavedWallpaper(
     val photos: List<Bitmap?>,
     val bgColor: Int,
     val bgImage: Bitmap?,
+    val adjusts: List<CellAdjust> = emptyList(),
 )
 
 /** Persists the active wallpaper mode plus the data for each mode. */
@@ -49,14 +51,20 @@ class WallpaperStore(private val ctx: Context) {
     }
 
     // ---- Mode 2: frames ----
-    fun save(frame: FrameTemplate, photos: List<Bitmap?>, bgColor: Int, bgImage: Bitmap?) {
+    fun save(frame: FrameTemplate, photos: List<Bitmap?>, bgColor: Int, bgImage: Bitmap?, adjusts: List<CellAdjust> = emptyList()) {
         dir.listFiles()?.forEach { it.delete() }
         bgFile.delete()
         if (bgImage != null) FileOutputStream(bgFile).use { bgImage.compress(Bitmap.CompressFormat.JPEG, 90, it) }
         photos.forEachIndexed { i, b ->
             if (b != null) FileOutputStream(File(dir, "s$i.jpg")).use { b.compress(Bitmap.CompressFormat.JPEG, 92, it) }
         }
-        commit(WallpaperMode.FRAMES) { putString("frame", frame.id).putInt("bgColor", bgColor) }
+        commit(WallpaperMode.FRAMES) {
+            putString("frame", frame.id).putInt("bgColor", bgColor)
+            for (i in frame.slots.indices) {
+                val a = adjusts.getOrNull(i) ?: CellAdjust()
+                putString("adj$i", "${a.zoom},${a.cx},${a.cy}")
+            }
+        }
     }
 
     fun load(): SavedWallpaper? {
@@ -66,7 +74,11 @@ class WallpaperStore(private val ctx: Context) {
         }
         if (photos.all { it == null }) return null
         val bgImage = bgFile.takeIf { it.exists() }?.let { BitmapFactory.decodeFile(it.path) }
-        return SavedWallpaper(frame, photos, prefs.getInt("bgColor", FrameRenderer.BG_COLOR), bgImage)
+        val adjusts = frame.slots.indices.map { i ->
+            val p = prefs.getString("adj$i", null)?.split(",")?.mapNotNull { it.toFloatOrNull() }
+            if (p != null && p.size == 3) CellAdjust(p[0], p[1], p[2]) else CellAdjust()
+        }
+        return SavedWallpaper(frame, photos, prefs.getInt("bgColor", FrameRenderer.BG_COLOR), bgImage, adjusts)
     }
 
     // ---- Mode 1: static photo ----

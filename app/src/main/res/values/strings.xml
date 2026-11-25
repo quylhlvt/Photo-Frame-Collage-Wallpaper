@@ -2,7 +2,7 @@
     <string name="app_name">Photo Frame Collage Wallpaper</string>
     <string name="choose_frame">Choose a frame</string>
     <string name="photo_count">%d photos</string>
-    <string name="editor_hint">Tap a frame to replace one photo, or choose several at once.</string>
+    <string name="editor_hint">Tap an empty frame to add a photo. Tap a photo to select it, then drag to move and pinch to zoom.</string>
     <string name="choose_photos">Choose photos</string>
     <string name="save">Save</string>
     <string name="set_wallpaper">Set as wallpaper</string>
@@ -29,6 +29,7 @@
     <string name="max_photos">You can use up to %d photos.</string>
     <string name="frames_for">Frames for %d photo(s)</string>
     <string name="add_photos">Add photos</string>
+    <string name="zoom">Zoom</string>
     <string name="replace_photo">Replace photo</string>
     <string name="remove">Remove</string>
     <string name="hint_tap">Tap a frame to select it, then drag to move and pinch to zoom.</string>

@@ -2,6 +2,7 @@ package com.example.depthwallpaper.frames
 
 import android.content.Intent
 import android.graphics.Bitmap
+import com.example.depthwallpaper.staticphoto.CellAdjust
 import android.graphics.Canvas
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -21,6 +22,8 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
     private lateinit var frame: FrameTemplate
     private lateinit var store: WallpaperStore
     private val photos = mutableListOf<Bitmap?>()
+    private val adjusts = mutableListOf<CellAdjust>()
+    private var selected = -1
     private var pendingSlot = -1
     private var bgColor = FrameRenderer.BG_COLOR
     private var bgImage: Bitmap? = null
@@ -30,10 +33,12 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
     override fun initView() {
         frame = FrameTemplates.byId(intent.getStringExtra(FrameListActivity.EXTRA_FRAME)) ?: run { finish(); return }
         store = WallpaperStore(this)
-        repeat(frame.slots.size) { photos.add(null) }
+        bgColor = frame.defaultBg
+        repeat(frame.slots.size) { photos.add(null); adjusts.add(CellAdjust()) }
         // Start from what is already saved for this frame, if any.
         if (store.frameId == frame.id) store.load()?.let { saved ->
             saved.photos.forEachIndexed { i, b -> photos[i] = b }
+            saved.adjusts.forEachIndexed { i, a -> if (i < adjusts.size) adjusts[i] = a }
             bgColor = saved.bgColor
             bgImage = saved.bgImage
         }
@@ -44,7 +49,12 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
             showHint = true
             bgColor = this@EditorActivity.bgColor
             bgImage = this@EditorActivity.bgImage
-            onSlotTap = { pickImages(multiple = false, slot = it) }
+            adjusts = this@EditorActivity.adjusts
+            onSlotTap = { onSlotTapped(it) }
+            onAdjusted = {
+                binding.btnSet.visibility = View.GONE
+                adjusts.getOrNull(selected)?.let { binding.zoomBar.progress = ((it.zoom - 1f) * 100).toInt() }
+            }
         }
         for (c in BG_COLORS) {
             binding.swatches.addView(View(this).apply {
@@ -64,8 +74,34 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
 
     override fun initAction() {
         binding.btnPick.setOnClickListener { pickImages(multiple = true, slot = -1) }
+        binding.zoomBar.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(bar: android.widget.SeekBar, progress: Int, fromUser: Boolean) {
+                if (fromUser && selected >= 0) {
+                    binding.preview.setZoom(selected, 1f + progress / 100f)
+                    binding.btnSet.visibility = View.GONE
+                }
+            }
+            override fun onStartTrackingTouch(bar: android.widget.SeekBar) {}
+            override fun onStopTrackingTouch(bar: android.widget.SeekBar) {}
+        })
+        binding.btnReplace.setOnClickListener { if (selected >= 0) pickImages(multiple = false, slot = selected) }
         binding.btnSave.setOnClickListener { save() }
         binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) }
+    }
+
+    /** Empty card: choose a photo for it. Filled card: select it so it can be moved and zoomed. */
+    private fun onSlotTapped(i: Int) {
+        if (i < 0) { select(-1); return }
+        if (photos[i] == null) { pickImages(multiple = false, slot = i); return }
+        select(if (selected == i) -1 else i)
+    }
+
+    private fun select(i: Int) {
+        selected = i
+        binding.preview.selected = i
+        binding.btnReplace.visibility = if (i >= 0) View.VISIBLE else View.GONE
+        binding.zoomRow.visibility = if (i >= 0) View.VISIBLE else View.GONE
+        adjusts.getOrNull(i)?.let { binding.zoomBar.progress = ((it.zoom - 1f) * 100).toInt() }
     }
 
     private fun setBackground(color: Int, image: Bitmap?) {
@@ -104,9 +140,10 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
                     setBackground(bgColor, decoded[0])
                 } else if (slot >= 0) {
                     photos[slot] = decoded[0]
+                    adjusts[slot] = CellAdjust()
                 } else {
                     // Fewer photos than slots: repeat them so every frame is filled.
-                    for (i in photos.indices) photos[i] = decoded[i % decoded.size]
+                    for (i in photos.indices) { photos[i] = decoded[i % decoded.size]; adjusts[i] = CellAdjust() }
                 }
                 binding.btnSet.visibility = View.GONE
                 binding.preview.photos = photos.toList()
@@ -122,7 +159,7 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
         }
         val filled = photos.map { it ?: first } // fill any empty slot
         Thread {
-            store.save(frame, filled, bgColor, bgImage)
+            store.save(frame, filled, bgColor, bgImage, adjusts.map { CellAdjust(it.zoom, it.cx, it.cy) })
             runOnUiThread {
                 for (i in photos.indices) photos[i] = filled[i]
                 binding.preview.photos = photos.toList()

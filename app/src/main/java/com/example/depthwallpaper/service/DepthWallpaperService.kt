@@ -45,6 +45,7 @@ class DepthWallpaperService : WallpaperService() {
         private var template: FrameTemplate = FrameTemplates.all[0]
         private var photos: List<Bitmap?> = emptyList()
         private var bg: Bitmap? = null
+        private var adjusts: List<com.example.depthwallpaper.staticphoto.CellAdjust> = emptyList()
         private var bgColor = FrameRenderer.BG_COLOR
 
         // STATIC
@@ -134,16 +135,17 @@ class DepthWallpaperService : WallpaperService() {
                 var ph: List<Bitmap?> = photos
                 var bgImg: Bitmap? = bg
                 var color = bgColor
+                var adj: List<com.example.depthwallpaper.staticphoto.CellAdjust> = emptyList()
                 if (newMode == WallpaperMode.FRAMES) {
                     val saved = store.load()
                     if (saved != null) {
-                        tpl = saved.frame; ph = saved.photos; bgImg = saved.bgImage; color = saved.bgColor
+                        tpl = saved.frame; ph = saved.photos; bgImg = saved.bgImage; color = saved.bgColor; adj = saved.adjusts
                     } else {
                         tpl = FrameTemplates.all[0]
                         val sample = SamplePhoto.build(resources, sampleSize())
                         ph = List(tpl.slots.size) { sample }
                         bgImg = decode(R.drawable.wp_bg)
-                        color = FrameRenderer.BG_COLOR
+                        color = tpl.defaultBg
                     }
                 }
                 handler.post {
@@ -152,7 +154,7 @@ class DepthWallpaperService : WallpaperService() {
                     loadedVersion = v
                     staticBmp = sBmp; staticScaled = null
                     mode = newMode
-                    if (mode == WallpaperMode.FRAMES) { template = tpl; photos = ph; bg = bgImg; bgColor = color }
+                    if (mode == WallpaperMode.FRAMES) { template = tpl; photos = ph; bg = bgImg; bgColor = color; adjusts = adj }
                     prepareRenderer()
                     if (isVisible) draw()
                     // The version changed while loading: pick up the newer one.
@@ -168,7 +170,7 @@ class DepthWallpaperService : WallpaperService() {
             val w = f.width()
             val h = f.height()
             when (mode) {
-                WallpaperMode.FRAMES -> renderer.prepare(w.toFloat(), h.toFloat(), template, photos, bg)
+                WallpaperMode.FRAMES -> renderer.prepare(w.toFloat(), h.toFloat(), template, photos, bg, adjusts = adjusts)
                 WallpaperMode.STATIC -> {
                     val src = staticBmp ?: return
                     if (staticScaled?.width == w && staticScaled?.height == h) return
@@ -259,7 +261,7 @@ class DepthWallpaperService : WallpaperService() {
                     canvas.drawColor(Color.BLACK)
                     staticScaled?.let { canvas.drawBitmap(it, 0f, 0f, null) }
                 } else {
-                    renderer.draw(canvas, canvas.width.toFloat(), canvas.height.toFloat(), template, photos, progress, bg, bgColor = bgColor)
+                    renderer.draw(canvas, canvas.width.toFloat(), canvas.height.toFloat(), template, photos, progress, bg, bgColor = bgColor, adjusts = adjusts)
                 }
             } finally {
                 holder.unlockCanvasAndPost(canvas)
