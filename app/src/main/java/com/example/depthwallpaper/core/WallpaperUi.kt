@@ -21,42 +21,33 @@ import android.widget.ImageView
 
 object WallpaperUi {
     /** Opens the system screen that sets this app's live wallpaper. */
-    fun openWallpaperPicker(
-        activity: Activity,
-        service: Class<*> = DepthWallpaperService::class.java,
-        lockImage: (() -> Bitmap?)? = null,
-    ) {
-        if (lockImage != null && isXiaomi()) {
-            AlertDialog.Builder(activity)
-                .setTitle(R.string.lock_title)
-                .setMessage(R.string.lock_message)
-                .setPositiveButton(R.string.lock_set_image) { _, _ ->
-                    Thread {
-                        val ok = runCatching { setLockImage(activity, lockImage()) }.getOrDefault(false)
-                        activity.runOnUiThread {
-                            Toast.makeText(activity, if (ok) R.string.lock_done else R.string.lock_failed, Toast.LENGTH_SHORT).show()
-                            launchPicker(activity, service)
-                        }
-                    }.start()
-                }
-                .setNegativeButton(R.string.continue_anyway) { _, _ -> launchPicker(activity, service) }
-                .show()
-            return
-        }
+    fun openWallpaperPicker(activity: Activity, service: Class<*> = DepthWallpaperService::class.java) {
+        // The system screen only offers the targets the phone supports (e.g. home only on some OEMs).
         launchPicker(activity, service)
     }
 
     /**
-     * Xiaomi (MIUI/HyperOS) draws the lock screen with its own wallpaper window, so a third-party
-     * live wallpaper only shows on the home screen. A still image can be set for the lock screen.
+     * vivo/OPPO draw the lock screen themselves and can't show a live wallpaper there; the
+     * wallpaper's effect is played on the home screen right after unlocking instead.
      */
-    private fun isXiaomi() = Build.MANUFACTURER.equals("xiaomi", ignoreCase = true) ||
-        Build.BRAND.equals("redmi", ignoreCase = true) || Build.BRAND.equals("poco", ignoreCase = true)
+    fun lockIgnoresLive(): Boolean {
+        val oem = "${Build.MANUFACTURER} ${Build.BRAND}".lowercase()
+        return listOf("vivo", "iqoo", "oppo", "realme").any { it in oem }
+    }
 
-    private fun setLockImage(ctx: Context, bmp: Bitmap?): Boolean {
-        bmp ?: return false
-        WallpaperManager.getInstance(ctx).setBitmap(bmp, null, true, WallpaperManager.FLAG_LOCK)
-        return true
+    /**
+     * If one of our live wallpapers is active but the lock screen still has its own still image
+     * (set earlier by the user or the system), drop that image so the lock screen follows the
+     * live wallpaper. Skipped on OEMs whose lock screen ignores live wallpapers anyway.
+     */
+    fun syncLockScreen(ctx: Context) {
+        if (lockIgnoresLive() || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) return
+        runCatching {
+            val wm = WallpaperManager.getInstance(ctx)
+            if (wm.wallpaperInfo?.packageName == ctx.packageName && wm.getWallpaperId(WallpaperManager.FLAG_LOCK) > 0) {
+                wm.clear(WallpaperManager.FLAG_LOCK)
+            }
+        }
     }
 
     private fun launchPicker(activity: Activity, service: Class<*>) {

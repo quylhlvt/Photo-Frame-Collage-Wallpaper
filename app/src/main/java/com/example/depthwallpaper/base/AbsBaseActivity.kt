@@ -32,6 +32,12 @@ abstract class AbsBaseActivity<V : ViewDataBinding> : AppCompatActivity() {
     /** Called once [binding] is ready; only needed when [inflateAsync] is true. */
     protected open fun onBindingReady() {}
 
+    override fun onResume() {
+        super.onResume()
+        // Back from the system wallpaper screen: make sure the lock screen follows our wallpaper.
+        com.example.depthwallpaper.core.WallpaperUi.syncLockScreen(this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (inflateAsync) {

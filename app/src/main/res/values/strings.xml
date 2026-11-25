@@ -36,10 +36,5 @@
     <string name="online_failed">Could not load the online list.</string>
     <string name="downloading">Downloading…</string>
     <string name="download_failed">Download failed. Check your connection.</string>
-    <string name="lock_title">Lock screen on this phone</string>
-    <string name="lock_message">Xiaomi phones draw their own lock screen, so a live wallpaper only shows on the home screen.\n\nWe can also set a still image of your wallpaper on the lock screen (without the animation or video).</string>
-    <string name="lock_set_image">Set lock screen image</string>
-    <string name="lock_done">Lock screen image set.</string>
-    <string name="lock_failed">Could not set the lock screen image.</string>
     <string name="continue_anyway">Continue anyway</string>
 </resources>

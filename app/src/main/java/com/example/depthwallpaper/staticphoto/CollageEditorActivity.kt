@@ -68,7 +68,7 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
         binding.btnPick.setOnClickListener { chooseClicked() }
         binding.btnRemove.setOnClickListener { removeSelected() }
         binding.btnSave.setOnClickListener { save() }
-        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) { android.graphics.BitmapFactory.decodeFile(store.staticFile.path) } }
+        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) }
     }
 
     // ---- selection ----

@@ -55,18 +55,47 @@ class DepthWallpaperService : WallpaperService() {
         private var progress = 1f // 1 = final layout (resting), 0 = all stacked in the centre
 
         // The frames effect plays once every time the lock screen appears (screen off -> on).
-        private var needsPop = true
+        private var needsPop = !WallpaperUi.lockIgnoresLive()
         private var locked = true // true from SCREEN_OFF until the user unlocks (USER_PRESENT)
+
+        // Phones whose lock screen can't show a live wallpaper: play the effect on the home screen
+        // right after unlocking instead. USER_PRESENT isn't sent for swipe-only locks, so poll.
+        private val ignoresLock = WallpaperUi.lockIgnoresLive()
+        private val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        private var unlockWatch: Runnable? = null
+
+        private fun watchUnlock() {
+            stopWatchingUnlock()
+            val km = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+            var tries = 0
+            val r = object : Runnable {
+                override fun run() {
+                    if (!km.isKeyguardLocked) { unlockWatch = null; handler.postDelayed({ if (isVisible) play() }, 250); return }
+                    if (++tries < 400) handler.postDelayed(this, 150) else unlockWatch = null
+                }
+            }
+            unlockWatch = r
+            handler.post(r)
+        }
+
+        private fun stopWatchingUnlock() {
+            unlockWatch?.let { handler.removeCallbacks(it) }
+            unlockWatch = null
+        }
 
         private val screenReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
                     Intent.ACTION_SCREEN_OFF -> {
                         locked = true
-                        if (mode == WallpaperMode.FRAMES) armPop()
+                        stopWatchingUnlock()
+                        if (mode == WallpaperMode.FRAMES && !ignoresLock) armPop()
                     }
                     Intent.ACTION_USER_PRESENT -> locked = false
-                    Intent.ACTION_SCREEN_ON -> if (isVisible && mode == WallpaperMode.FRAMES) tryPop()
+                    Intent.ACTION_SCREEN_ON -> if (mode == WallpaperMode.FRAMES) {
+                        if (ignoresLock && !isPreview) watchUnlock()
+                        else if (isVisible) tryPop()
+                    }
                 }
             }
         }
@@ -172,7 +201,7 @@ class DepthWallpaperService : WallpaperService() {
                     WallpaperMode.STATIC, WallpaperMode.VIDEO -> Unit
                     // Going away while locked (e.g. screen turned off): next time, play from the start.
                     WallpaperMode.FRAMES ->
-                        if (!isPreview && isOnLockScreen()) armPop() else { animator?.cancel(); progress = 1f }
+                        if (!isPreview && !ignoresLock && isOnLockScreen()) armPop() else { animator?.cancel(); progress = 1f }
                 }
                 else -> {
                     reload()
@@ -243,6 +272,7 @@ class DepthWallpaperService : WallpaperService() {
             BitmapFactory.decodeResource(resources, id, BitmapFactory.Options().apply { inSampleSize = sampleSize() })
 
         override fun onDestroy() {
+            stopWatchingUnlock()
             animator?.cancel()
             runCatching { applicationContext.unregisterReceiver(screenReceiver) }
             super.onDestroy()
