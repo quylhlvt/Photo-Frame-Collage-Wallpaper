@@ -90,7 +90,7 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
             startActivityForResult(WallpaperUi.pickIntent("video/*"), REQ_PICK)
         }
         binding.btnSave.setOnClickListener { save() }
-        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this, VideoWallpaperService::class.java) }
+        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this, VideoWallpaperService::class.java) { thumbnail { setDataSource(store.videoFile.path) } } }
     }
 
     private fun thumbnail(source: MediaMetadataRetriever.() -> Unit): Bitmap? {

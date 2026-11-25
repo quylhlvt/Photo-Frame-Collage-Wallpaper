@@ -2,6 +2,7 @@ package com.example.depthwallpaper.frames
 
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.view.View
@@ -64,7 +65,14 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
     override fun initAction() {
         binding.btnPick.setOnClickListener { pickImages(multiple = true, slot = -1) }
         binding.btnSave.setOnClickListener { save() }
-        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) }
+        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) {
+            // Still image of the final layout for lock screens that can't run the live wallpaper.
+            store.load()?.let { saved ->
+                val bmp = Bitmap.createBitmap(1080, 2400, Bitmap.Config.ARGB_8888)
+                FrameRenderer().draw(Canvas(bmp), 1080f, 2400f, saved.frame, saved.photos, 1f, saved.bgImage, bgColor = saved.bgColor)
+                bmp
+            }
+        } }
     }
 
     private fun setBackground(color: Int, image: Bitmap?) {
