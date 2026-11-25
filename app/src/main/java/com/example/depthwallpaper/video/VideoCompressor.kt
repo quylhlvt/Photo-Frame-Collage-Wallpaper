@@ -46,19 +46,28 @@ object VideoCompressor {
         }
     }
 
+    /**
+     * @param fit true: keep the whole picture inside a screen-shaped frame (black bars, nothing cut off);
+     *            false: fill the screen and crop the edges.
+     */
     fun compress(
-        ctx: Context, uri: Uri, out: File,
+        ctx: Context, uri: Uri, out: File, fit: Boolean = false,
         onProgress: (Int) -> Unit, onDone: (Boolean) -> Unit,
     ) {
         val main = Handler(Looper.getMainLooper())
         val (w, h) = dims(ctx, uri)
         val targetHeight = if (h >= w) MAX_SHORT_SIDE * 16 / 9 else MAX_SHORT_SIDE
+        val dm = ctx.resources.displayMetrics
+        val outW = MAX_SHORT_SIDE
+        val outH = (outW * dm.heightPixels.toFloat() / dm.widthPixels).toInt() / 2 * 2
+        val presentation = if (fit) Presentation.createForWidthAndHeight(outW, outH, Presentation.LAYOUT_SCALE_TO_FIT)
+        else Presentation.createForHeight(targetHeight)
 
         val clip = MediaItem.ClippingConfiguration.Builder().setEndPositionMs(MAX_SECONDS * 1000L).build()
         val item = MediaItem.Builder().setUri(uri).setClippingConfiguration(clip).build()
         val effects = Effects(
             emptyList(),
-            listOf(Presentation.createForHeight(targetHeight), FrameDropEffect.createDefaultFrameDropEffect(30f)),
+            listOf(presentation, FrameDropEffect.createDefaultFrameDropEffect(30f)),
         )
         val edited = EditedMediaItem.Builder(item).setRemoveAudio(true).setEffects(effects).build()
         val encoder = DefaultEncoderFactory.Builder(ctx)

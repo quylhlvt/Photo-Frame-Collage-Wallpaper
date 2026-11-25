@@ -128,6 +128,8 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
         if (busy) return
         busy = true
         // Online videos are already encoded light; only compress what the user picked from the device.
+        // Fit/fill is applied when the wallpaper draws the video; only heavy device videos are re-encoded.
+        store.videoFit = binding.modeFit.isChecked
         if (uri.scheme == "file" || VideoCompressor.isLight(this, uri)) {
             store(uri)
             return
@@ -135,7 +137,7 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
         val out = File(cacheDir, "compressed.mp4")
         showProgress(getString(R.string.optimizing, 0))
         VideoCompressor.compress(
-            this, uri, out,
+            this, uri, out, false,
             onProgress = { showProgress(getString(R.string.optimizing, it)) },
             onDone = { ok ->
                 if (ok) store(Uri.fromFile(out)) else {

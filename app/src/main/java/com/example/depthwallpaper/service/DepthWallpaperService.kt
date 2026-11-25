@@ -112,40 +112,57 @@ class DepthWallpaperService : WallpaperService() {
             ContextCompat.registerReceiver(applicationContext, screenReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
         }
 
-        /** (Re)load what the user saved; falls back to the bundled sample frames. */
+        private var loading = false
+
+        /**
+         * (Re)load what the user saved; falls back to the bundled sample frames. Decoding runs on a
+         * background thread so the wallpaper shows its background colour at once instead of
+         * blocking the main thread (slow phones used to show nothing for seconds).
+         */
         private fun reload() {
             val v = store.version
-            if (loaded && v == loadedVersion) return
-            loaded = true
-            loadedVersion = v
-            staticBmp = null; staticScaled = null
-
-            mode = store.imageMode
-            if (mode == WallpaperMode.STATIC) {
-                staticBmp = store.staticFile.takeIf { it.exists() }?.let { decodeFile(it.path) }
-                if (staticBmp == null) mode = WallpaperMode.FRAMES
-            }
-            if (mode == WallpaperMode.FRAMES) loadFrames()
-            prepareRenderer()
-        }
-
-        private fun loadFrames() {
-            val saved = store.load()
-            if (saved != null) {
-                template = saved.frame
-                photos = saved.photos
-                bg = saved.bgImage
-                bgColor = saved.bgColor
-            } else {
-                template = FrameTemplates.all[0]
-                val sample = SamplePhoto.build(resources, sampleSize())
-                photos = List(template.slots.size) { sample }
-                bg = decode(R.drawable.wp_bg)
-                bgColor = FrameRenderer.BG_COLOR
-            }
+            if ((loaded && v == loadedVersion) || loading) return
+            loading = true
+            Thread {
+                var newMode = store.imageMode
+                var sBmp: Bitmap? = null
+                if (newMode == WallpaperMode.STATIC) {
+                    sBmp = store.staticFile.takeIf { it.exists() }?.let { decodeFile(it.path) }
+                    if (sBmp == null) newMode = WallpaperMode.FRAMES
+                }
+                var tpl = template
+                var ph: List<Bitmap?> = photos
+                var bgImg: Bitmap? = bg
+                var color = bgColor
+                if (newMode == WallpaperMode.FRAMES) {
+                    val saved = store.load()
+                    if (saved != null) {
+                        tpl = saved.frame; ph = saved.photos; bgImg = saved.bgImage; color = saved.bgColor
+                    } else {
+                        tpl = FrameTemplates.all[0]
+                        val sample = SamplePhoto.build(resources, sampleSize())
+                        ph = List(tpl.slots.size) { sample }
+                        bgImg = decode(R.drawable.wp_bg)
+                        color = FrameRenderer.BG_COLOR
+                    }
+                }
+                handler.post {
+                    loading = false
+                    loaded = true
+                    loadedVersion = v
+                    staticBmp = sBmp; staticScaled = null
+                    mode = newMode
+                    if (mode == WallpaperMode.FRAMES) { template = tpl; photos = ph; bg = bgImg; bgColor = color }
+                    prepareRenderer()
+                    if (isVisible) draw()
+                    // The version changed while loading: pick up the newer one.
+                    if (store.version != loadedVersion) reload()
+                }
+            }.start()
         }
 
         private fun prepareRenderer() {
+            if (!loaded) return
             val f = surfaceHolder.surfaceFrame
             if (f.width() <= 0) return
             val w = f.width()
@@ -236,7 +253,9 @@ class DepthWallpaperService : WallpaperService() {
             val holder = surfaceHolder
             val canvas = holder.lockCanvas() ?: return
             try {
-                if (mode == WallpaperMode.STATIC) {
+                if (!loaded) {
+                    canvas.drawColor(bgColor) // still decoding: show the background colour right away
+                } else if (mode == WallpaperMode.STATIC) {
                     canvas.drawColor(Color.BLACK)
                     staticScaled?.let { canvas.drawBitmap(it, 0f, 0f, null) }
                 } else {

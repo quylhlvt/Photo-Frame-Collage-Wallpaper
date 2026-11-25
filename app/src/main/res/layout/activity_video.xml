@@ -46,6 +46,27 @@
             style="@style/HintText"
             android:visibility="gone" />
 
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/modeFill"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/video_fill" />
+
+            <RadioButton
+                android:id="@+id/modeFit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="@string/video_fit" />
+        </RadioGroup>
+
         <Button
             android:id="@+id/btnPick"
             android:layout_width="match_parent"

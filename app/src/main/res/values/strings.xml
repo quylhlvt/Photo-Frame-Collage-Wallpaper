@@ -18,6 +18,8 @@
     <string name="mode_video">Video wallpaper</string>
     <string name="mode_video_desc">Play a looping, muted video behind your icons and lock screen.</string>
     <string name="choose_photo">Choose photo</string>
+    <string name="video_fill">Fill screen (crop)</string>
+    <string name="video_fit">Fit whole video</string>
     <string name="choose_video">Choose video</string>
     <string name="pick_video_first">Choose a video first.</string>
     <string name="saving">Saving…</string>

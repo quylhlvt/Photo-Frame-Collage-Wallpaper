@@ -27,6 +27,11 @@ class WallpaperStore(private val ctx: Context) {
     val videoFile get() = File(ctx.filesDir, "video.mp4")
 
     val version: Long get() = prefs.getLong("version", 0L)
+
+    /** Video wallpaper placement: true keeps the whole picture visible, false fills and crops. */
+    var videoFit: Boolean
+        get() = prefs.getBoolean("videoFit", true)
+        set(v) { prefs.edit().putBoolean("videoFit", v).apply() }
     val frameId: String? get() = prefs.getString("frame", null)
     val mode: WallpaperMode
         get() = runCatching { WallpaperMode.valueOf(prefs.getString("mode", null)!!) }

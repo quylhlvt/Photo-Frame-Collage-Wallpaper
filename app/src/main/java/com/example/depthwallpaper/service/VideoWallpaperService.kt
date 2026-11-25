@@ -20,6 +20,7 @@ class VideoWallpaperService : WallpaperService() {
         private var player: MediaPlayer? = null
         private var prepared = false
         private var loadedVersion = -1L
+        private var renderer: VideoGlRenderer? = null
         private val handler = Handler(Looper.getMainLooper())
         private val releaseLater = Runnable { release() }
 
@@ -51,15 +52,34 @@ class VideoWallpaperService : WallpaperService() {
             val file = store.videoFile
             val surface = surfaceHolder.surface
             if (!file.exists() || !surface.isValid) return
+            // Raw size and rotation tag of the file, to tell whether this phone applied the tag itself.
+            var rawW = 0; var rawH = 0; var tagRot = 0
+            val r = android.media.MediaMetadataRetriever()
+            try {
+                r.setDataSource(file.path)
+                rawW = r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toInt() ?: 0
+                rawH = r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toInt() ?: 0
+                tagRot = r.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION)?.toInt() ?: 0
+            } catch (e: Exception) {
+            } finally {
+                runCatching { r.release() }
+            }
+            val fit = store.videoFit
+            val gl = runCatching { VideoGlRenderer(surface) }.getOrNull() ?: return
+            renderer = gl
             val mp = MediaPlayer()
             try {
-                mp.setSurface(surface)
+                mp.setSurface(gl.videoSurface)
                 mp.setDataSource(file.path)
                 mp.isLooping = true
                 mp.setVolume(0f, 0f)
+                mp.setOnVideoSizeChangedListener { _, w, h ->
+                    // If the player reports the unrotated size, it ignored the rotation tag: apply it here.
+                    val manual = if (tagRot % 180 != 0 && w == rawW && h == rawH && w != h) tagRot else 0
+                    gl.configure(w, h, manual, fit)
+                }
                 mp.setOnPreparedListener {
                     prepared = true
-                    runCatching { it.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING) }
                     if (isVisible) runCatching { it.start() }
                 }
                 mp.setOnErrorListener { _, _, _ -> release(); true }
@@ -69,6 +89,7 @@ class VideoWallpaperService : WallpaperService() {
             } catch (e: Exception) {
                 runCatching { mp.release() }
                 player = null
+                release()
             }
         }
 
@@ -76,6 +97,8 @@ class VideoWallpaperService : WallpaperService() {
             runCatching { player?.release() }
             player = null
             prepared = false
+            renderer?.let { runCatching { it.release() } }
+            renderer = null
         }
 
         override fun onDestroy() {
