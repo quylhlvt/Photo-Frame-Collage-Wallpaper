@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.lifecycleScope
+import com.example.depthwallpaper.core.hideNavigation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,8 +39,12 @@ abstract class AbsBaseActivity<V : ViewDataBinding> : AppCompatActivity() {
         com.example.depthwallpaper.core.WallpaperUi.syncLockScreen(this)
     }
 
+    /** true: status bar icons are drawn dark (light screens). */
+    protected open val lightStatusBar: Boolean = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        hideNavigation(isBlack = lightStatusBar)
         if (inflateAsync) {
             setContentView(FrameLayout(this).apply {
                 if (placeholderBackground != 0) setBackgroundResource(placeholderBackground)
@@ -60,6 +65,12 @@ abstract class AbsBaseActivity<V : ViewDataBinding> : AppCompatActivity() {
             initView()
             initAction()
         }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        // The navigation bar can reappear after a dialog or the system picker: hide it again.
+        if (hasFocus) hideNavigation(isBlack = lightStatusBar)
     }
 
     abstract fun getLayoutId(): Int

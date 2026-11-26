@@ -36,6 +36,7 @@ class FrameRenderer(private val ctx: android.content.Context) {
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textAlign = Paint.Align.CENTER
     }
+    private val selRect = RectF()
     private val selectPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE; color = 0xFF2F80ED.toInt(); strokeWidth = 6f
     }
@@ -75,8 +76,11 @@ class FrameRenderer(private val ctx: android.content.Context) {
         FrameStyle.POLAROID, FrameStyle.CAPTION, FrameStyle.DARK, FrameStyle.THIN_DARK, FrameStyle.THIN_WHITE -> true
         else -> false
     }
+    private fun frameOf(t: FrameTemplate, s: Slot) = s.frame ?: t.frame
+
     private fun cardH(t: FrameTemplate, s: Slot, w: Float): Float {
         val cw = cardW(s, w)
+        frameOf(t, s)?.let { return cw * assets.aspect(it) }
         return if (hasBorder(t)) {
             photoInset(t, cw) + (cw - 2 * photoInset(t, cw)) * s.aspect + bottomStrip(t, cw)
         } else cw * s.aspect
@@ -186,9 +190,8 @@ class FrameRenderer(private val ctx: android.content.Context) {
             canvas.scale(sc, sc)
             canvas.drawBitmap(card, -card.width / 2f, -card.height / 2f, bitmapPaint)
             if (i == selected) {
-                val half = cardW(s, w) / 2f
-                val halfH = cardH(t, s, w) / 2f
-                canvas.drawRect(-half, -halfH, half, halfH, selectPaint)
+                windowRect(t, s, w, selRect)
+                canvas.drawRect(selRect, selectPaint)
             }
             canvas.restoreToCount(save)
         }
@@ -204,6 +207,10 @@ class FrameRenderer(private val ctx: android.content.Context) {
     ) {
         val cw = cardW(s, w)
         val ch = cardH(t, s, w)
+        frameOf(t, s)?.let { name ->
+            drawFramed(canvas, t, s, name, pic, cw, ch, hint, adj)
+            return
+        }
         if (hasBorder(t)) {
             rect.set(-cw / 2f, -ch / 2f, cw / 2f, ch / 2f)
             val old = cardPaint.color
@@ -267,11 +274,56 @@ class FrameRenderer(private val ctx: android.content.Context) {
         }
     }
 
+    /** Card made of a frame image: the photo goes in its transparent window, the frame on top. */
+    private fun drawFramed(
+        canvas: Canvas, t: FrameTemplate, s: Slot, name: String, pic: Bitmap?,
+        cw: Float, ch: Float, hint: Boolean, adj: CellAdjust?,
+    ) {
+        val win = assets.window(name)
+        dst.set(-cw / 2f + win[0] * cw, -ch / 2f + win[1] * ch, -cw / 2f + win[2] * cw, -ch / 2f + win[3] * ch)
+        rect.set(-cw / 2f, -ch / 2f, cw / 2f, ch / 2f)
+        val mask = assets.windowMask(name, cw.toInt().coerceAtLeast(1))
+        val layer = if (mask != null) canvas.saveLayer(rect, null) else -1
+        if (pic != null) {
+            cropSrc(pic, dst.width(), dst.height(), adj)
+            canvas.drawBitmap(pic, src, dst, bitmapPaint)
+        } else {
+            canvas.drawRect(dst, emptyPaint)
+            if (hint) {
+                plusPaint.textSize = dst.width() * 0.4f
+                canvas.drawText("+", dst.centerX(), dst.centerY() + plusPaint.textSize * 0.35f, plusPaint)
+            }
+        }
+        if (mask != null) {
+            maskPaint.xfermode = android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.DST_IN)
+            canvas.drawBitmap(mask, null, rect, maskPaint)
+            maskPaint.xfermode = null
+            canvas.restoreToCount(layer)
+        }
+        assets.bitmap(name, cw.toInt().coerceAtLeast(1))?.let { fr ->
+            rect.set(-cw / 2f, -ch / 2f, cw / 2f, ch / 2f)
+            canvas.drawBitmap(fr, null, rect, bitmapPaint)
+        }
+        val caption = s.caption
+        if (caption != null) {
+            val top = dst.bottom
+            val stripH = ch / 2f - top
+            scriptPaint.color = when {
+                t.captionColor != 0 -> t.captionColor
+                name.contains("dark") -> Color.WHITE
+                else -> 0xFF111111.toInt()
+            }
+            scriptPaint.textSize = stripH * if (name.contains("dark")) 0.62f else 0.46f
+            canvas.drawText(caption, 0f, top + stripH / 2f + scriptPaint.textSize * 0.33f, scriptPaint)
+        }
+    }
+
+    private val maskPaint = Paint(Paint.FILTER_BITMAP_FLAG)
     private val decorPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
 
     private fun drawDecor(canvas: Canvas, d: Decor, w: Float, h: Float) {
         val bmp = assets.bitmap(d.drawable, (d.w * w).toInt().coerceAtLeast(1)) ?: return
-        decorPaint.colorFilter = if (d.tint != 0) android.graphics.PorterDuffColorFilter(d.tint, android.graphics.PorterDuff.Mode.SRC_IN) else null
+        decorPaint.colorFilter = if (d.tint != 0 && assets.isPlaceholder(d.drawable)) android.graphics.PorterDuffColorFilter(d.tint, android.graphics.PorterDuff.Mode.SRC_IN) else null
         val save = canvas.save()
         canvas.translate(d.x * w, d.y * h)
         canvas.rotate(d.rot)
@@ -341,10 +393,33 @@ class FrameRenderer(private val ctx: android.content.Context) {
         return bmp
     }
 
+    /** The photo window of a card, relative to the card centre (what the selection outline follows). */
+    private fun windowRect(t: FrameTemplate, s: Slot, w: Float, out: RectF) {
+        val cw = cardW(s, w)
+        val ch = cardH(t, s, w)
+        val name = frameOf(t, s)
+        when {
+            name != null -> {
+                val win = assets.window(name)
+                out.set(-cw / 2f + win[0] * cw, -ch / 2f + win[1] * ch, -cw / 2f + win[2] * cw, -ch / 2f + win[3] * ch)
+            }
+            hasBorder(t) -> {
+                val b = photoInset(t, cw)
+                out.set(-cw / 2f + b, -ch / 2f + b, cw / 2f - b, -ch / 2f + b + (cw - 2 * b) * s.aspect)
+            }
+            else -> out.set(-cw / 2f, -ch / 2f, cw / 2f, ch / 2f)
+        }
+    }
+
     /** Size of the photo window of slot [i] in screen units, for gesture maths. */
     fun photoSize(t: FrameTemplate, i: Int, w: Float, out: FloatArray) {
         val s = t.slots[i]
         val cw = cardW(s, w)
+        frameOf(t, s)?.let { name ->
+            val win = assets.window(name)
+            out[0] = (win[2] - win[0]) * cw; out[1] = (win[3] - win[1]) * cardH(t, s, w)
+            return
+        }
         if (hasBorder(t)) {
             val pw = cw - 2 * photoInset(t, cw)
             out[0] = pw; out[1] = pw * s.aspect

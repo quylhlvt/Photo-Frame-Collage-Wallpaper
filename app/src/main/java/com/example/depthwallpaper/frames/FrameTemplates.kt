@@ -29,6 +29,8 @@ enum class FrameStyle {
 data class Slot(
     val x: Float, val y: Float, val rot: Float, val w: Float, val aspect: Float = 1.1f,
     val caption: String? = null,
+    /** Frame image for this one photo, overriding the template's [FrameTemplate.frame]. */
+    val frame: String? = null,
 )
 
 /** Handwritten text floating on the wallpaper. [size] is a fraction of the screen width. */
@@ -66,6 +68,11 @@ data class FrameTemplate(
     val bgPattern: String? = null,
     val bgPatternColor: Int = 0,
     val captionColor: Int = 0,
+    /**
+     * Name of a frame image drawable (transparent window = where the photo shows). When set it
+     * replaces the drawn border of [style]; the card takes the image's proportions.
+     */
+    val frame: String? = null,
 )
 
 object FrameTemplates {
@@ -84,19 +91,10 @@ object FrameTemplates {
     }
 
     private fun lips() = listOf(
-        Decor("decor_lips", 0.07f, 0.02f, 0.22f), Decor("decor_lips", 0.52f, 0.03f, 0.30f, -4f),
-        Decor("decor_lips", 0.95f, 0.01f, 0.22f, 8f), Decor("decor_lips", 0.50f, 0.15f, 0.36f, 3f),
-        Decor("decor_lips", 0.95f, 0.14f, 0.20f, -10f), Decor("decor_lips", 0.06f, 0.14f, 0.18f, 14f),
-        Decor("decor_lips", 0.12f, 0.27f, 0.20f, -6f), Decor("decor_lips", 0.52f, 0.27f, 0.30f, 0f),
-        Decor("decor_lips", 0.96f, 0.27f, 0.22f, 6f),
-        Decor("decor_lips", 0.05f, 0.45f, 0.18f, 12f), Decor("decor_lips", 0.96f, 0.43f, 0.18f, -12f),
-        Decor("decor_lips", 0.08f, 0.66f, 0.20f, 4f), Decor("decor_lips", 0.95f, 0.64f, 0.20f, -4f),
-        Decor("decor_lips", 0.12f, 0.84f, 0.26f, -8f), Decor("decor_lips", 0.52f, 0.84f, 0.30f, 3f),
-        Decor("decor_lips", 0.92f, 0.82f, 0.22f, 6f), Decor("decor_lips", 0.15f, 0.96f, 0.30f, 0f),
-        Decor("decor_lips", 0.55f, 0.97f, 0.30f, -6f), Decor("decor_lips", 0.95f, 0.95f, 0.24f, 8f),
-        // Darker small ones at the card's corners.
-        Decor("decor_lips", 0.20f, 0.575f, 0.16f, -8f, tint = 0xFF8E1B1B.toInt()),
-        Decor("decor_lips", 0.83f, 0.575f, 0.16f, 8f, tint = 0xFF8E1B1B.toInt()),
+        Decor("decor_lips_2", 0.07f, 0.02f, 0.22f, front = true),
+        Decor("decor_lips", 0.95f, 0.01f, 0.22f, 8f, front = true),
+        Decor("decor_lips_2", 0.95f, 0.14f, 0.20f, -10f, front = true),
+        Decor("decor_lips", 0.12f, 0.27f, 0.20f, -6f, front = true),
     )
 
     val all: List<FrameTemplate> = listOf(
@@ -110,6 +108,7 @@ object FrameTemplates {
                 Decor("decor_flower_1", 0.12f, 0.93f, 0.38f, -10f, front = true),
                 Decor("decor_heart", 0.78f, 0.28f, 0.30f, -10f, front = true),
             ),
+            frame = "frame_garden",
         ),
         FrameTemplate(
             "booth", "Photo booth", FrameStyle.PLAIN,
@@ -123,11 +122,13 @@ object FrameTemplates {
             "heart", "Heart collage", FrameStyle.THIN_DARK, heartSlots(),
             defaultBg = 0xFFEDE4DD.toInt(), bgImage = "bg_paper",
             labels = listOf(Label("The Beauty Of Love", 0.50f, 0.86f, 0.075f, 0xFF222222.toInt())),
+            frame = "frame_heart",
         ),
         FrameTemplate(
             "kisses", "All my love", FrameStyle.CAPTION,
             listOf(Slot(0.50f, 0.56f, 0f, 0.62f, 1.28f, "All my love for you")),
             defaultBg = 0xFFFFFFFF.toInt(), captionColor = 0xFFD32F2F.toInt(), decor = lips(),
+            frame = "frame_kisses",
         ),
         FrameTemplate(
             "music", "Music", FrameStyle.POLAROID,
@@ -139,6 +140,7 @@ object FrameTemplates {
                 Decor("decor_sparkle", 0.28f, 0.865f, 0.11f, tint = 0xFF8EC5DD.toInt()),
                 Decor("decor_sparkle", 0.93f, 0.60f, 0.05f, tint = 0xFF8EC5DD.toInt()),
             ),
+            frame = "frame_music",
         ),
         FrameTemplate(
             "iloveyou", "I love you", FrameStyle.POLAROID,
@@ -147,6 +149,7 @@ object FrameTemplates {
                 Slot(0.29f, 0.765f, 0f, 0.34f, 1.05f), Slot(0.71f, 0.765f, 0f, 0.34f, 1.05f),
             ),
             defaultBg = 0xFFFFFBE8.toInt(), bgPattern = "I love you", bgPatternColor = 0xFFF28B8B.toInt(),
+            frame = "frame_iloveyou",
         ),
         FrameTemplate(
             "rows", "Hearts rows", FrameStyle.PLAIN,
@@ -197,6 +200,7 @@ object FrameTemplates {
                 Decor("decor_heart", 0.39f, 0.84f, 0.05f, tint = 0xFFFFFFFF.toInt()),
                 Decor("decor_heart", 0.62f, 0.84f, 0.05f, tint = 0xFFFFFFFF.toInt()),
             ),
+            frame = "frame_soft",
         ),
         FrameTemplate(
             "circles", "Circles", FrameStyle.CIRCLE,
@@ -206,6 +210,7 @@ object FrameTemplates {
         FrameTemplate(
             "caption_single", "Best memory", FrameStyle.CAPTION,
             listOf(Slot(0.50f, 0.56f, 0f, 0.80f, 1.40f, "Best memory")),
+            frame = "frame_best_memory",
         ),
         FrameTemplate(
             "pill_clouds", "Pink clouds", FrameStyle.PILL,
@@ -215,6 +220,7 @@ object FrameTemplates {
                 Decor("decor_cloud", 0.17f, 0.285f, 0.34f), Decor("decor_cloud", 0.83f, 0.275f, 0.30f, flip = true),
             ),
             labels = listOf(Label("The Beauty", 0.50f, 0.89f, 0.075f, PINK_TEXT)),
+            frame = "frame_pill_clouds",
         ),
         FrameTemplate(
             "dark_duo", "Love memory", FrameStyle.DARK,
@@ -227,6 +233,7 @@ object FrameTemplates {
                 Label("Love Memory", 0.74f, 0.42f, 0.085f, PINK_TEXT, -4f),
                 Label("Our Love", 0.17f, 0.64f, 0.085f, PINK_TEXT, 3f),
             ),
+            frame = "frame_love_memory",
         ),
     )
 

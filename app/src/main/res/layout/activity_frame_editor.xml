@@ -21,29 +21,6 @@
             android:layout_marginVertical="8dp"
             android:layout_weight="1" />
 
-        <LinearLayout
-            android:id="@+id/zoomRow"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                style="@style/HintText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/zoom" />
-
-            <SeekBar
-                android:id="@+id/zoomBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:max="400" />
-        </LinearLayout>
-
         <TextView
             style="@style/HintText"
             android:gravity="start"

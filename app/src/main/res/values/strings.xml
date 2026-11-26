@@ -40,4 +40,21 @@
     <string name="downloading">Downloading…</string>
     <string name="download_failed">Download failed. Check your connection.</string>
     <string name="continue_anyway">Continue anyway</string>
+    <string name="splash_loading">Loading… this may include ads</string>
+    <string name="next">Next</string>
+    <string name="get_started">Get started</string>
+    <string name="continue_text">Continue</string>
+    <string name="intro_title_1">Make photo collages</string>
+    <string name="intro_content_1">Pick up to 10 photos and arrange them in a layout you like.</string>
+    <string name="intro_title_2">Frames that fly out</string>
+    <string name="intro_content_2">Put photos into frames and watch them fly out when you unlock your phone.</string>
+    <string name="intro_title_3">Video wallpapers</string>
+    <string name="intro_content_3">Use a looping video as your wallpaper, from your phone or online.</string>
+    <string name="permission">Permission</string>
+    <string name="permission_allow">Allow access</string>
+    <string name="permission_notification">Notifications</string>
+    <string name="permission_notification_desc">Allow notifications so the app can tell you when your wallpaper is ready.</string>
+    <string name="permission_storage">Photos and storage</string>
+    <string name="permission_storage_desc">Allow access to your photos and videos so you can use them in wallpapers.</string>
+    <string name="permission_granted">Permission already allowed.</string>
 </resources>

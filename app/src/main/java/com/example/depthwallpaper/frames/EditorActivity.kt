@@ -51,10 +51,7 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
             bgImage = this@EditorActivity.bgImage
             adjusts = this@EditorActivity.adjusts
             onSlotTap = { onSlotTapped(it) }
-            onAdjusted = {
-                binding.btnSet.visibility = View.GONE
-                adjusts.getOrNull(selected)?.let { binding.zoomBar.progress = ((it.zoom - 1f) * 100).toInt() }
-            }
+            onAdjusted = { binding.btnSet.visibility = View.GONE }
         }
         for (c in BG_COLORS) {
             binding.swatches.addView(View(this).apply {
@@ -74,16 +71,6 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
 
     override fun initAction() {
         binding.btnPick.setOnClickListener { pickImages(multiple = true, slot = -1) }
-        binding.zoomBar.setOnSeekBarChangeListener(object : android.widget.SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(bar: android.widget.SeekBar, progress: Int, fromUser: Boolean) {
-                if (fromUser && selected >= 0) {
-                    binding.preview.setZoom(selected, 1f + progress / 100f)
-                    binding.btnSet.visibility = View.GONE
-                }
-            }
-            override fun onStartTrackingTouch(bar: android.widget.SeekBar) {}
-            override fun onStopTrackingTouch(bar: android.widget.SeekBar) {}
-        })
         binding.btnReplace.setOnClickListener { if (selected >= 0) pickImages(multiple = false, slot = selected) }
         binding.btnSave.setOnClickListener { save() }
         binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) }
@@ -100,8 +87,6 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
         selected = i
         binding.preview.selected = i
         binding.btnReplace.visibility = if (i >= 0) View.VISIBLE else View.GONE
-        binding.zoomRow.visibility = if (i >= 0) View.VISIBLE else View.GONE
-        adjusts.getOrNull(i)?.let { binding.zoomBar.progress = ((it.zoom - 1f) * 100).toInt() }
     }
 
     private fun setBackground(color: Int, image: Bitmap?) {

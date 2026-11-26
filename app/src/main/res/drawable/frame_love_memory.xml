@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark polaroid with a thicker bottom strip. Transparent window = where the photo shows. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp" android:height="120dp" android:viewportWidth="100" android:viewportHeight="120">
+    <path
+        android:fillColor="#444444"
+        android:fillType="evenOdd"
+        android:pathData="M0,0 H100 V120 H0 Z M7,7 H93 V100 H7 Z" />
+</vector>
