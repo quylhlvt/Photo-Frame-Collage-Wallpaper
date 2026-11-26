@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.example.depthwallpaper.video.VideoViewModel" />
+
+        <variable
+            name="ui"
+            type="com.example.depthwallpaper.video.VideoActivity" />
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
@@ -16,6 +28,7 @@
 
         <com.example.depthwallpaper.core.PhoneImageView
             android:id="@+id/preview"
+            app:bitmap="@{vm.preview}"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_marginVertical="8dp"
@@ -25,14 +38,14 @@
             android:id="@+id/onlineTitle"
             style="@style/HintText"
             android:text="@string/online_videos"
-            android:visibility="gone" />
+            app:visible="@{vm.showOnline}" />
 
         <HorizontalScrollView
             android:id="@+id/onlineScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:visibility="gone">
+            app:visible="@{vm.showOnline}">
 
             <LinearLayout
                 android:id="@+id/onlineRow"
@@ -44,7 +57,8 @@
         <TextView
             android:id="@+id/progressText"
             style="@style/HintText"
-            android:visibility="gone" />
+            android:text="@{vm.busyText}"
+            app:visible="@{vm.busyText != null}" />
 
         <RadioGroup
             android:layout_width="match_parent"
@@ -56,6 +70,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:checked="@{!vm.fit}"
                 android:text="@string/video_fill" />
 
             <RadioButton
@@ -63,18 +78,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:checked="true"
+                android:checked="@={vm.fit}"
                 android:text="@string/video_fit" />
         </RadioGroup>
 
         <Button
             android:id="@+id/btnPick"
+            android:onClick="@{() -> ui.pick()}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/choose_video" />
 
         <Button
             android:id="@+id/btnSave"
+            android:onClick="@{() -> ui.save()}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/save" />
@@ -83,7 +100,8 @@
             android:id="@+id/btnSet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> ui.setWallpaper()}"
             android:text="@string/set_wallpaper"
-            android:visibility="gone" />
+            app:visible="@{vm.canSet}" />
     </LinearLayout>
 </layout>

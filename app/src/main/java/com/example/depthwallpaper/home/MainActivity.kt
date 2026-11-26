@@ -12,11 +12,13 @@ import com.example.depthwallpaper.video.VideoActivity
 class MainActivity : AbsBaseActivity<ActivityHomeBinding>() {
     override fun getLayoutId() = R.layout.activity_home
 
-    override fun initView() {}
-
-    override fun initAction() {
-        binding.cardStatic.setOnClickListener { startActivity(Intent(this, StaticActivity::class.java)) }
-        binding.cardFrames.setOnClickListener { startActivity(Intent(this, FrameListActivity::class.java)) }
-        binding.cardVideo.setOnClickListener { startActivity(Intent(this, VideoActivity::class.java)) }
+    override fun initView() {
+        binding.ui = this // the cards call the functions below straight from the layout
     }
+
+    override fun initAction() {}
+
+    fun openStatic() = startActivity(Intent(this, StaticActivity::class.java))
+    fun openFrames() = startActivity(Intent(this, FrameListActivity::class.java))
+    fun openVideo() = startActivity(Intent(this, VideoActivity::class.java))
 }

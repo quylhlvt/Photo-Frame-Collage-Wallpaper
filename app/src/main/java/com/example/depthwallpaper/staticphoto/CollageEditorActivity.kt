@@ -2,6 +2,7 @@ package com.example.depthwallpaper.staticphoto
 
 import android.content.Intent
 import android.graphics.Bitmap
+import androidx.activity.viewModels
 import android.graphics.Canvas
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -27,13 +28,20 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
     private var adjusts = mutableListOf<CellAdjust>()
     private var layout: CollageLayout = Collages.layoutsFor(1)[0]
     private var theme: CollageTheme = Collages.themes[0]
-    private var selected = -1
+    private val vm: CollageEditorViewModel by viewModels()
+    private var selected: Int
+        get() = vm.selected.value ?: -1
+        set(v) { vm.selected.value = v }
     private var pendingCell = -1
 
     override fun getLayoutId() = R.layout.activity_collage_editor
 
     override fun initView() {
         store = WallpaperStore(this)
+        binding.vm = vm
+        binding.ui = this
+        vm.selected.value = -1 // the photo lists are rebuilt on every start
+        vm.canSet.value = false
         val held = PickedPhotos.take()
         val count = (held?.size ?: intent.getIntExtra(EXTRA_COUNT, 1)).coerceIn(1, Collages.MAX_PHOTOS)
         photos = held?.toMutableList<Bitmap?>() ?: MutableList(count) { null }
@@ -49,7 +57,7 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
             adjusts = this@CollageEditorActivity.adjusts
             showHint = true
             onCellTap = { onTap(it) }
-            onAdjusted = { binding.btnSet.visibility = View.GONE }
+            onAdjusted = { vm.canSet.value = false }
         }
         for (t in Collages.themes) {
             binding.swatches.addView(View(this).apply {
@@ -57,19 +65,16 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
                     shape = GradientDrawable.OVAL
                     setStroke(dp(2), 0x66888888)
                 }
-                setOnClickListener { theme = t; binding.preview.theme = t; binding.btnSet.visibility = View.GONE }
+                setOnClickListener { theme = t; binding.preview.theme = t; vm.canSet.value = false }
             }, LinearLayout.LayoutParams(dp(32), dp(32)).also { it.marginEnd = dp(10) })
         }
         rebuildThumbs()
         refreshUi()
     }
 
-    override fun initAction() {
-        binding.btnPick.setOnClickListener { chooseClicked() }
-        binding.btnRemove.setOnClickListener { removeSelected() }
-        binding.btnSave.setOnClickListener { save() }
-        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) }
-    }
+    override fun initAction() {}
+
+    fun setWallpaper() = WallpaperUi.openWallpaperPicker(this)
 
     // ---- selection ----
     private fun onTap(cell: Int) {
@@ -80,18 +85,16 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
         if (selected >= 0 && photos[selected] == null) pickImages(multiple = false, cell = selected)
     }
 
+    /** The layout shows the right texts and buttons from these two values. */
     private fun refreshUi() {
-        val sel = selected >= 0
-        binding.btnPick.text = getString(if (sel) R.string.replace_photo else R.string.add_photos)
-        binding.btnRemove.visibility = if (sel && photos.size > 1) View.VISIBLE else View.GONE
-        binding.hint.text = getString(if (sel) R.string.hint_selected else R.string.hint_tap)
+        vm.photoCount.value = photos.size
     }
 
-    private fun chooseClicked() {
+    fun chooseClicked() {
         if (selected >= 0) pickImages(multiple = false, cell = selected) else pickImages(multiple = true, cell = -1)
     }
 
-    private fun removeSelected() {
+    fun removeSelected() {
         val i = selected
         if (i < 0 || photos.size <= 1) return
         photos.removeAt(i)
@@ -112,20 +115,19 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
             rebuildThumbs()
         }
         binding.preview.photos = photos.toList()
-        binding.btnSet.visibility = View.GONE
+        vm.canSet.value = false
         refreshUi()
     }
 
     private fun rebuildThumbs() {
         binding.thumbs.removeAllViews()
-        binding.layoutLabel.text = getString(R.string.frames_for, photos.size)
         for (l in Collages.layoutsFor(photos.size)) {
             binding.thumbs.addView(LayoutThumbView(this, l).apply {
                 chosen = l.id == layout.id
                 setOnClickListener {
                     layout = l
                     binding.preview.layout = l
-                    binding.btnSet.visibility = View.GONE
+                    vm.canSet.value = false
                     rebuildThumbs()
                 }
             }, LinearLayout.LayoutParams(dp(40), dp(86)).also { it.marginEnd = dp(10) })
@@ -184,7 +186,7 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
     }
 
     // ---- saving ----
-    private fun save() {
+    fun save() {
         val first = photos.firstOrNull { it != null }
         if (first == null) {
             Toast.makeText(this, R.string.pick_first, Toast.LENGTH_SHORT).show()
@@ -202,7 +204,7 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
             runOnUiThread {
                 for (i in photos.indices) if (photos[i] == null) photos[i] = filled[i]
                 binding.preview.photos = photos.toList()
-                binding.btnSet.visibility = View.VISIBLE
+                vm.canSet.value = true
                 Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
             }
         }.start()

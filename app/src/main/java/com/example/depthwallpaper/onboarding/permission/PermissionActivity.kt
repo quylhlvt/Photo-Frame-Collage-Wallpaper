@@ -6,8 +6,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.depthwallpaper.R
@@ -25,24 +25,24 @@ class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>() {
     private val permission = if (isNotification) Manifest.permission.POST_NOTIFICATIONS
     else Manifest.permission.READ_EXTERNAL_STORAGE
     private val key get() = if (isNotification) "notification" else "storage"
+    private val vm: PermissionViewModel by viewModels()
     private var requesting = false
 
     override fun getLayoutId() = R.layout.activity_permission
 
     override fun initView() {
-        binding.permTitle.setText(if (isNotification) R.string.permission_notification else R.string.permission_storage)
-        binding.permDesc.setText(if (isNotification) R.string.permission_notification_desc else R.string.permission_storage_desc)
-        refresh()
-    }
-
-    override fun initAction() {
-        binding.rowPermission.setOnClickListener { onRowClicked() }
-        binding.btnContinue.setOnClickListener {
+        binding.vm = vm // texts, switch state and clicks go through the ViewModel
+        vm.rowClicked.observe(this) { if (it.consume() != null) onRowClicked() }
+        vm.continueClicked.observe(this) {
+            if (it.consume() == null) return@observe
             AppPrefs.setPermissionDone(this)
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
+        refresh()
     }
+
+    override fun initAction() {}
 
     private fun granted() = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
 
@@ -75,7 +75,7 @@ class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>() {
     }
 
     private fun refresh() {
-        binding.permSwitch.isChecked = granted()
+        vm.granted.value = granted()
     }
 
     @Deprecated("Deprecated in Java")

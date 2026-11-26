@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.example.depthwallpaper.frames.EditorViewModel" />
+
+        <variable
+            name="ui"
+            type="com.example.depthwallpaper.frames.EditorActivity" />
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingHorizontal="16dp"
@@ -46,6 +58,7 @@
 
             <Button
                 android:id="@+id/btnPick"
+                android:onClick="@{() -> ui.chooseAll()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -56,12 +69,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="@{() -> ui.replaceSelected()}"
                 android:text="@string/replace_photo"
-                android:visibility="gone" />
+                app:visible="@{vm.selected >= 0}" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btnSave"
+            android:onClick="@{() -> ui.save()}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/save" />
@@ -70,7 +85,8 @@
             android:id="@+id/btnSet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:onClick="@{() -> ui.setWallpaper()}"
             android:text="@string/set_wallpaper"
-            android:visibility="gone" />
+            app:visible="@{vm.canSet}" />
     </LinearLayout>
 </layout>

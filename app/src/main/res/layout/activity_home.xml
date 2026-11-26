@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="ui"
+            type="com.example.depthwallpaper.home.MainActivity" />
+    </data>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,6 +30,7 @@
 
             <LinearLayout
                 android:id="@+id/cardStatic"
+                android:onClick="@{() -> ui.openStatic()}"
                 style="@style/Card">
 
                 <TextView
@@ -35,6 +44,7 @@
 
             <LinearLayout
                 android:id="@+id/cardFrames"
+                android:onClick="@{() -> ui.openFrames()}"
                 style="@style/Card">
 
                 <TextView
@@ -48,6 +58,7 @@
 
             <LinearLayout
                 android:id="@+id/cardVideo"
+                android:onClick="@{() -> ui.openVideo()}"
                 style="@style/Card">
 
                 <TextView

@@ -4,7 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.view.View
+import androidx.activity.viewModels
 import android.widget.ImageView
 import android.widget.LinearLayout
 import java.io.File
@@ -18,6 +18,7 @@ import com.example.depthwallpaper.service.VideoWallpaperService
 
 /** Mode 3: a looping, muted video as the wallpaper. */
 class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
+    private val vm: VideoViewModel by viewModels()
     private lateinit var store: WallpaperStore
     private var pickedUri: Uri? = null
     private var busy = false
@@ -26,10 +27,14 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
 
     override fun initView() {
         store = WallpaperStore(this)
-        store.videoFile.takeIf { it.exists() }?.let { f ->
-            thumbnail { setDataSource(f.path) }?.let { binding.preview.setImageBitmap(it) }
+        binding.vm = vm
+        binding.ui = this
+        if (vm.preview.value == null) {
+            store.videoFile.takeIf { it.exists() }?.let { f ->
+                thumbnail { setDataSource(f.path) }?.let { vm.preview.value = it }
+            }
+            loadOnline()
         }
-        loadOnline()
     }
 
     private fun loadOnline() {
@@ -39,8 +44,7 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
             val thumbs = list.map { VideoCatalog.thumb(it.thumbUrl) }
             runOnUiThread {
                 if (isFinishing) return@runOnUiThread
-                binding.onlineTitle.visibility = View.VISIBLE
-                binding.onlineScroll.visibility = View.VISIBLE
+                vm.showOnline.value = true
                 list.forEachIndexed { i, v ->
                     val iv = ImageView(this).apply {
                         layoutParams = LinearLayout.LayoutParams(dp(72), dp(128)).apply { marginEnd = dp(8) }
@@ -71,27 +75,25 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
                 val thumb = thumbnail { setDataSource(f.path) }
                 if (thumb == null) { Toast.makeText(this, R.string.load_failed, Toast.LENGTH_SHORT).show(); return@runOnUiThread }
                 pickedUri = Uri.fromFile(f)
-                binding.preview.setImageBitmap(thumb)
-                binding.btnSet.visibility = View.GONE
+                vm.preview.value = thumb
+                vm.canSet.value = false
             }
         }.start()
     }
 
-    private fun showProgress(text: String) {
-        binding.progressText.text = text
-        binding.progressText.visibility = View.VISIBLE
+    private fun showProgress(text: String) { vm.busyText.value = text }
+
+    private fun hideProgress() { vm.busyText.value = null }
+
+    override fun initAction() {}
+
+    // Buttons call these straight from the layout (android:onClick="@{() -> ui.xxx()}").
+    fun pick() {
+        @Suppress("DEPRECATION")
+        startActivityForResult(WallpaperUi.pickIntent("video/*"), REQ_PICK)
     }
 
-    private fun hideProgress() { binding.progressText.visibility = View.GONE }
-
-    override fun initAction() {
-        binding.btnPick.setOnClickListener {
-            @Suppress("DEPRECATION")
-            startActivityForResult(WallpaperUi.pickIntent("video/*"), REQ_PICK)
-        }
-        binding.btnSave.setOnClickListener { save() }
-        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this, VideoWallpaperService::class.java) }
-    }
+    fun setWallpaper() = WallpaperUi.openWallpaperPicker(this, VideoWallpaperService::class.java)
 
     private fun thumbnail(source: MediaMetadataRetriever.() -> Unit): Bitmap? {
         val r = MediaMetadataRetriever()
@@ -117,11 +119,11 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
             return
         }
         pickedUri = uri
-        binding.preview.setImageBitmap(thumb)
-        binding.btnSet.visibility = View.GONE
+        vm.preview.value = thumb
+        vm.canSet.value = false
     }
 
-    private fun save() {
+    fun save() {
         val uri = pickedUri ?: run {
             Toast.makeText(this, R.string.pick_video_first, Toast.LENGTH_SHORT).show(); return
         }
@@ -129,7 +131,7 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
         busy = true
         // Online videos are already encoded light; only compress what the user picked from the device.
         // Fit/fill is applied when the wallpaper draws the video; only heavy device videos are re-encoded.
-        store.videoFit = binding.modeFit.isChecked
+        store.videoFit = vm.fit.value == true
         if (uri.scheme == "file" || VideoCompressor.isLight(this, uri)) {
             store(uri)
             return
@@ -157,7 +159,7 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
                 busy = false
                 hideProgress()
                 if (ok) {
-                    binding.btnSet.visibility = View.VISIBLE
+                    vm.canSet.value = true
                     pickedUri = null
                     Toast.makeText(this, R.string.saved, Toast.LENGTH_SHORT).show()
                 } else {
