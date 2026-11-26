@@ -105,9 +105,10 @@ object FrameTemplates {
             listOf(Slot(0.42f, 0.47f, 15f, 0.68f, 0.63f), Slot(0.58f, 0.77f, -14f, 0.60f, 0.63f)),
             defaultBg = 0xFFF1F1F1.toInt(), bgImage = "bg_paper",
             decor = listOf(
-                Decor("decor_flower", 0.17f, 0.335f, 0.20f, front = true), Decor("decor_flower", 0.79f, 0.60f, 0.18f, 20f, front = true),
-                Decor("decor_flower", 0.12f, 0.93f, 0.28f, -10f, front = true), Decor("decor_flower", 0.24f, 0.955f, 0.17f, 15f, front = true),
-                Decor("decor_heart", 0.78f, 0.28f, 0.10f, 12f, tint = 0xFFD94B3F.toInt(), front = true),
+                Decor("decor_flower", 0.17f, 0.335f, 0.30f, front = true),
+                Decor("decor_flower", 0.79f, 0.60f, 0.25f, 20f, front = true),
+                Decor("decor_flower_1", 0.12f, 0.93f, 0.38f, -10f, front = true),
+                Decor("decor_heart", 0.78f, 0.28f, 0.30f, -10f, front = true),
             ),
         ),
         FrameTemplate(

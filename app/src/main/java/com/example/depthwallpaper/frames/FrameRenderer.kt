@@ -69,7 +69,7 @@ class FrameRenderer(private val ctx: android.content.Context) {
         FrameStyle.CAPTION -> cw * 0.30f
         FrameStyle.DARK -> cw * 0.17f
         FrameStyle.THIN_DARK, FrameStyle.THIN_WHITE -> cw * 0.05f
-        else -> cw * 0.20f
+        else -> cw * 0.05f
     }
     private fun hasBorder(t: FrameTemplate) = when (t.style) {
         FrameStyle.POLAROID, FrameStyle.CAPTION, FrameStyle.DARK, FrameStyle.THIN_DARK, FrameStyle.THIN_WHITE -> true

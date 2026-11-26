@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Replace with your own image: put decor_heart.png in res/drawable-nodpi and delete this file. -->
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp" android:height="100dp" android:viewportWidth="100" android:viewportHeight="100">
-    <path
-        android:fillColor="#E57373"
-        android:pathData="M50,90 C5,55 15,15 50,35 C85,15 95,55 50,90 Z" />
-</vector>
