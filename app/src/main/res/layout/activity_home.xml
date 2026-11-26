@@ -1,74 +1,293 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <variable
-            name="ui"
-            type="com.example.depthwallpaper.home.MainActivity" />
-    </data>
-
-    <ScrollView
+        android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:paddingHorizontal="16dp">
+
+                <ImageView
+                    android:id="@+id/btnMenu"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical"
+                    android:contentDescription="@null"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_menu" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/home_title"
+                    android:textColor="#2B2B3A"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/btnAvatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical|end"
+                    android:background="@drawable/bg_hot_item"
+                    android:contentDescription="@null"
+                    android:padding="4dp"
+                    android:src="@drawable/ic_card_polaroids" />
+            </FrameLayout>
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="24dp">
+
+                    <FrameLayout
+                        android:id="@+id/cardStatic"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/bg_home_blue">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="36dp"
+                            android:text="@string/home_diy"
+                            android:textColor="#FFFFFF"
+                            android:textSize="21sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="125dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="10dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_card_polaroids" />
+
+                        <ImageView
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:layout_gravity="start|bottom"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="14dp"
+                            android:background="@drawable/bg_arrow_blue"
+                            android:contentDescription="@null"
+                            android:padding="11dp"
+                            android:src="@drawable/ic_arrow_right_white" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/cardFrames"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_home_orange">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="36dp"
+                            android:text="@string/home_diy_live"
+                            android:textColor="#FFFFFF"
+                            android:textSize="21sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="125dp"
+                            android:layout_height="110dp"
+                            android:layout_gravity="end|center_vertical"
+                            android:layout_marginEnd="10dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_card_polaroids" />
+
+                        <ImageView
+                            android:layout_width="46dp"
+                            android:layout_height="46dp"
+                            android:layout_gravity="start|bottom"
+                            android:layout_marginStart="22dp"
+                            android:layout_marginBottom="14dp"
+                            android:background="@drawable/bg_arrow_orange"
+                            android:contentDescription="@null"
+                            android:padding="11dp"
+                            android:src="@drawable/ic_arrow_right_white" />
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/cardVideo"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_small_card"
+                            android:elevation="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_dynamic" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:text="@string/home_dynamic"
+                                android:textColor="#2B2B3A"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/cardProject"
+                            android:layout_width="0dp"
+                            android:layout_height="64dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_small_card"
+                            android:elevation="4dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="12dp">
+
+                            <ImageView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:contentDescription="@null"
+                                android:src="@drawable/ic_project" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:text="@string/home_project"
+                                android:textColor="#2B2B3A"
+                                android:textSize="17sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_hot_viral"
+                            android:textColor="#2B2B3A"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btnViewAll"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end|center_vertical"
+                            android:text="@string/home_view_all"
+                            android:textColor="#2F6FF0"
+                            android:textSize="14sp" />
+                    </FrameLayout>
+
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:id="@+id/hotRow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" />
+                    </HorizontalScrollView>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@drawable/bg_drawer"
+            android:clickable="true"
+            android:focusable="true"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="20dp">
+
+            <ImageView
+                android:id="@+id/drawerLogo"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="56dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_splash_logo" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:text="@string/app_name"
-                android:textSize="24sp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="20dp"
+                android:gravity="center"
+                android:text="@string/home_title"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <LinearLayout
-                android:id="@+id/cardStatic"
-                android:onClick="@{() -> ui.openStatic()}"
-                style="@style/Card">
-
-                <TextView
-                    style="@style/CardTitle"
-                    android:text="@string/mode_static" />
-
-                <TextView
-                    style="@style/CardDesc"
-                    android:text="@string/mode_static_desc" />
+            <LinearLayout android:id="@+id/itemLanguage" style="@style/DrawerItem">
+                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_globe" />
+                <TextView style="@style/DrawerText" android:text="@string/menu_language" />
+                <ImageView style="@style/DrawerChevron" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/cardFrames"
-                android:onClick="@{() -> ui.openFrames()}"
-                style="@style/Card">
-
-                <TextView
-                    style="@style/CardTitle"
-                    android:text="@string/mode_frames" />
-
-                <TextView
-                    style="@style/CardDesc"
-                    android:text="@string/mode_frames_desc" />
+            <LinearLayout android:id="@+id/itemRate" style="@style/DrawerItem">
+                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_star_white" />
+                <TextView style="@style/DrawerText" android:text="@string/menu_rate" />
+                <ImageView style="@style/DrawerChevron" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/cardVideo"
-                android:onClick="@{() -> ui.openVideo()}"
-                style="@style/Card">
+            <LinearLayout android:id="@+id/itemShare" style="@style/DrawerItem">
+                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_share_white" />
+                <TextView style="@style/DrawerText" android:text="@string/menu_share" />
+                <ImageView style="@style/DrawerChevron" />
+            </LinearLayout>
 
-                <TextView
-                    style="@style/CardTitle"
-                    android:text="@string/mode_video" />
-
-                <TextView
-                    style="@style/CardDesc"
-                    android:text="@string/mode_video_desc" />
+            <LinearLayout android:id="@+id/itemPrivacy" style="@style/DrawerItem">
+                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_shield_white" />
+                <TextView style="@style/DrawerText" android:text="@string/menu_privacy" />
+                <ImageView style="@style/DrawerChevron" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
-</layout>
+    </androidx.drawerlayout.widget.DrawerLayout>

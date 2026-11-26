@@ -10,9 +10,7 @@ import com.example.depthwallpaper.core.SamplePhoto
 import com.example.depthwallpaper.databinding.ActivityFrameListBinding
 
 /** Mode 2: list of frames; tap one to open the editor. */
-class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>() {
-    override fun getLayoutId() = R.layout.activity_frame_list
-
+class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFrameListBinding::inflate) {
     override fun initView() {
         val sample = SamplePhoto.build(resources, 4)
         for (frame in FrameTemplates.all) {

@@ -16,11 +16,8 @@ import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.databinding.ActivityStaticBinding
 
 /** Mode 1 (DIY): ready-made collage templates. Tap one to edit it, or tap "+" to start from your own photos. */
-class StaticActivity : AbsBaseActivity<ActivityStaticBinding>() {
-    override fun getLayoutId() = R.layout.activity_static
-
+class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBinding::inflate) {
     override fun initView() {
-        binding.ui = this
         val sample = SamplePhoto.build(resources, 4)
         Collages.presets.chunked(2).forEach { pair ->
             val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
@@ -30,12 +27,11 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>() {
         }
     }
 
-    override fun initAction() {}
-
-    /** The "+" button calls this from the layout. */
-    fun addPhotos() {
-        @Suppress("DEPRECATION")
-        startActivityForResult(WallpaperUi.pickIntent("image/*", multiple = true), REQ_PICK)
+    override fun initAction() {
+        binding.btnAdd.setOnClickListener {
+            @Suppress("DEPRECATION")
+            startActivityForResult(WallpaperUi.pickIntent("image/*", multiple = true), REQ_PICK)
+        }
     }
 
     private fun templateCard(p: CollagePreset, sample: Bitmap?): View {

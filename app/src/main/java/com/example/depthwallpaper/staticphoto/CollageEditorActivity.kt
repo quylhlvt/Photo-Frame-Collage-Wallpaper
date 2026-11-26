@@ -2,7 +2,9 @@ package com.example.depthwallpaper.staticphoto
 
 import android.content.Intent
 import android.graphics.Bitmap
+import com.example.depthwallpaper.project.ProjectStore
 import androidx.activity.viewModels
+import com.example.depthwallpaper.core.show
 import android.graphics.Canvas
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
@@ -21,7 +23,7 @@ import com.example.depthwallpaper.core.WallpaperUi
  * "Choose photos" fills the selected frame, or - with nothing selected - adds photos (max 10), and the
  * suggested layouts follow the photo count. Save renders the collage as the static wallpaper image.
  */
-class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
+class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>(ActivityCollageEditorBinding::inflate) {
     private lateinit var store: WallpaperStore
 
     private var photos = mutableListOf<Bitmap?>()
@@ -34,12 +36,12 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
         set(v) { vm.selected.value = v }
     private var pendingCell = -1
 
-    override fun getLayoutId() = R.layout.activity_collage_editor
-
     override fun initView() {
         store = WallpaperStore(this)
-        binding.vm = vm
-        binding.ui = this
+        // Texts and buttons that depend on the selection / photo count follow the ViewModel.
+        vm.selected.observe(this) { updateTexts() }
+        vm.photoCount.observe(this) { updateTexts() }
+        vm.canSet.observe(this) { binding.btnSet.show(it) }
         vm.selected.value = -1 // the photo lists are rebuilt on every start
         vm.canSet.value = false
         val held = PickedPhotos.take()
@@ -72,9 +74,21 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
         refreshUi()
     }
 
-    override fun initAction() {}
+    override fun initAction() {
+        binding.btnPick.setOnClickListener { chooseClicked() }
+        binding.btnRemove.setOnClickListener { removeSelected() }
+        binding.btnSave.setOnClickListener { save() }
+        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) }
+    }
 
-    fun setWallpaper() = WallpaperUi.openWallpaperPicker(this)
+    private fun updateTexts() {
+        val sel = selected >= 0
+        val count = vm.photoCount.value ?: 1
+        binding.hint.setText(if (sel) R.string.hint_selected else R.string.hint_tap)
+        binding.layoutLabel.text = getString(R.string.frames_for, count)
+        binding.btnPick.setText(if (sel) R.string.replace_photo else R.string.add_photos)
+        binding.btnRemove.show(sel && count > 1)
+    }
 
     // ---- selection ----
     private fun onTap(cell: Int) {
@@ -85,16 +99,16 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
         if (selected >= 0 && photos[selected] == null) pickImages(multiple = false, cell = selected)
     }
 
-    /** The layout shows the right texts and buttons from these two values. */
+    /** Tells the ViewModel the photo count; the texts follow it. */
     private fun refreshUi() {
         vm.photoCount.value = photos.size
     }
 
-    fun chooseClicked() {
+    private fun chooseClicked() {
         if (selected >= 0) pickImages(multiple = false, cell = selected) else pickImages(multiple = true, cell = -1)
     }
 
-    fun removeSelected() {
+    private fun removeSelected() {
         val i = selected
         if (i < 0 || photos.size <= 1) return
         photos.removeAt(i)
@@ -186,7 +200,7 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
     }
 
     // ---- saving ----
-    fun save() {
+    private fun save() {
         val first = photos.firstOrNull { it != null }
         if (first == null) {
             Toast.makeText(this, R.string.pick_first, Toast.LENGTH_SHORT).show()
@@ -200,6 +214,7 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>() {
             val bmp = Bitmap.createBitmap(OUT_W, OUT_H, Bitmap.Config.ARGB_8888)
             CollageRenderer().draw(Canvas(bmp), OUT_W.toFloat(), OUT_H.toFloat(), l, t, filled, adjusts = adj)
             store.saveStatic(bmp)
+            runCatching { ProjectStore(this).addStatic(bmp) } // also listed under Project
             bmp.recycle()
             runOnUiThread {
                 for (i in photos.indices) if (photos[i] == null) photos[i] = filled[i]

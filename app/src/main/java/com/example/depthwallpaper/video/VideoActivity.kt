@@ -2,9 +2,11 @@ package com.example.depthwallpaper.video
 
 import android.content.Intent
 import android.graphics.Bitmap
+import com.example.depthwallpaper.project.ProjectStore
 import android.media.MediaMetadataRetriever
 import android.net.Uri
 import androidx.activity.viewModels
+import com.example.depthwallpaper.core.show
 import android.widget.ImageView
 import android.widget.LinearLayout
 import java.io.File
@@ -17,18 +19,28 @@ import com.example.depthwallpaper.databinding.ActivityVideoBinding
 import com.example.depthwallpaper.service.VideoWallpaperService
 
 /** Mode 3: a looping, muted video as the wallpaper. */
-class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
+class VideoActivity : AbsBaseActivity<ActivityVideoBinding>(ActivityVideoBinding::inflate) {
     private val vm: VideoViewModel by viewModels()
     private lateinit var store: WallpaperStore
     private var pickedUri: Uri? = null
     private var busy = false
 
-    override fun getLayoutId() = R.layout.activity_video
-
     override fun initView() {
         store = WallpaperStore(this)
-        binding.vm = vm
-        binding.ui = this
+        // Everything that changes on screen follows the ViewModel.
+        vm.preview.observe(this) { if (it != null) binding.preview.setImageBitmap(it) }
+        vm.canSet.observe(this) { binding.btnSet.show(it) }
+        vm.busyText.observe(this) {
+            binding.progressText.show(it != null)
+            binding.progressText.text = it
+        }
+        vm.showOnline.observe(this) {
+            binding.onlineTitle.show(it)
+            binding.onlineScroll.show(it)
+        }
+        binding.modeFit.isChecked = vm.fit.value == true
+        binding.modeFill.isChecked = vm.fit.value != true
+        binding.modeFit.setOnCheckedChangeListener { _, checked -> vm.fit.value = checked }
         if (vm.preview.value == null) {
             store.videoFile.takeIf { it.exists() }?.let { f ->
                 thumbnail { setDataSource(f.path) }?.let { vm.preview.value = it }
@@ -85,15 +97,14 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
 
     private fun hideProgress() { vm.busyText.value = null }
 
-    override fun initAction() {}
-
-    // Buttons call these straight from the layout (android:onClick="@{() -> ui.xxx()}").
-    fun pick() {
-        @Suppress("DEPRECATION")
-        startActivityForResult(WallpaperUi.pickIntent("video/*"), REQ_PICK)
+    override fun initAction() {
+        binding.btnPick.setOnClickListener {
+            @Suppress("DEPRECATION")
+            startActivityForResult(WallpaperUi.pickIntent("video/*"), REQ_PICK)
+        }
+        binding.btnSave.setOnClickListener { save() }
+        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this, VideoWallpaperService::class.java) }
     }
-
-    fun setWallpaper() = WallpaperUi.openWallpaperPicker(this, VideoWallpaperService::class.java)
 
     private fun thumbnail(source: MediaMetadataRetriever.() -> Unit): Bitmap? {
         val r = MediaMetadataRetriever()
@@ -123,7 +134,7 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
         vm.canSet.value = false
     }
 
-    fun save() {
+    private fun save() {
         val uri = pickedUri ?: run {
             Toast.makeText(this, R.string.pick_video_first, Toast.LENGTH_SHORT).show(); return
         }
@@ -155,6 +166,7 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>() {
         showProgress(getString(R.string.saving))
         Thread {
             val ok = store.saveVideo(uri)
+            if (ok) runCatching { ProjectStore(this).addVideo(store.videoFile, store.videoFit) } // also listed under Project
             runOnUiThread {
                 busy = false
                 hideProgress()

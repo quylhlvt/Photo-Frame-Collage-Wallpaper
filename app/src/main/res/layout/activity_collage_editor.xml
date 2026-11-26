@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <variable
-            name="vm"
-            type="com.example.depthwallpaper.staticphoto.CollageEditorViewModel" />
-
-        <variable
-            name="ui"
-            type="com.example.depthwallpaper.staticphoto.CollageEditorActivity" />
-    </data>
-
-    <LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
@@ -24,8 +11,7 @@
 
         <TextView
             android:id="@+id/hint"
-            style="@style/HintText"
-            android:text="@{vm.selected >= 0 ? @string/hint_selected : @string/hint_tap}" />
+            style="@style/HintText" />
 
         <com.example.depthwallpaper.staticphoto.CollagePreviewView
             android:id="@+id/preview"
@@ -38,8 +24,7 @@
         <TextView
             android:id="@+id/layoutLabel"
             style="@style/HintText"
-            android:gravity="start"
-            android:text="@{@string/frames_for(vm.photoCount)}" />
+            android:gravity="start" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -75,24 +60,20 @@
 
             <Button
                 android:id="@+id/btnPick"
-                android:onClick="@{() -> ui.chooseClicked()}"
-                android:text="@{vm.selected >= 0 ? @string/replace_photo : @string/add_photos}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1" />
 
             <Button
                 android:id="@+id/btnRemove"
+        android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="@{() -> ui.removeSelected()}"
-                android:text="@string/remove"
-                app:visible="@{vm.selected >= 0 &amp;&amp; vm.photoCount > 1}" />
+                android:text="@string/remove" />
 
             <Button
                 android:id="@+id/btnSave"
-                android:onClick="@{() -> ui.save()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -101,10 +82,8 @@
 
         <Button
             android:id="@+id/btnSet"
+        android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> ui.setWallpaper()}"
-            android:text="@string/set_wallpaper"
-            app:visible="@{vm.canSet}" />
+            android:text="@string/set_wallpaper" />
     </LinearLayout>
-</layout>

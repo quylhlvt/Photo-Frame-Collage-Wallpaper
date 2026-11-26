@@ -1,20 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <data>
-
-        <variable
-            name="vm"
-            type="com.example.depthwallpaper.frames.EditorViewModel" />
-
-        <variable
-            name="ui"
-            type="com.example.depthwallpaper.frames.EditorActivity" />
-    </data>
-
-    <LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
@@ -58,7 +45,6 @@
 
             <Button
                 android:id="@+id/btnPick"
-                android:onClick="@{() -> ui.chooseAll()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -66,27 +52,23 @@
 
             <Button
                 android:id="@+id/btnReplace"
+        android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:onClick="@{() -> ui.replaceSelected()}"
-                android:text="@string/replace_photo"
-                app:visible="@{vm.selected >= 0}" />
+                android:text="@string/replace_photo" />
         </LinearLayout>
 
         <Button
             android:id="@+id/btnSave"
-            android:onClick="@{() -> ui.save()}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/save" />
 
         <Button
             android:id="@+id/btnSet"
+        android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="@{() -> ui.setWallpaper()}"
-            android:text="@string/set_wallpaper"
-            app:visible="@{vm.canSet}" />
+            android:text="@string/set_wallpaper" />
     </LinearLayout>
-</layout>

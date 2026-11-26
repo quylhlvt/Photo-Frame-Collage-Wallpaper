@@ -1,6 +1,8 @@
 package com.example.depthwallpaper.base
 
+import android.content.Context
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -8,8 +10,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
+import androidx.viewbinding.ViewBinding
 import androidx.lifecycle.lifecycleScope
 import com.example.depthwallpaper.core.hideNavigation
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +18,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * Base class for every screen. Inflates the data-binding layout from [getLayoutId], exposes it as
- * [binding], then calls [initView] and [initAction].
+ * Base class for every screen. Inflates the view-binding class given as [bindingInflater] (for
+ * example `ActivityHomeBinding::inflate`), exposes it as [binding], then calls [initView] and
+ * [initAction].
  */
-abstract class AbsBaseActivity<V : ViewDataBinding> : AppCompatActivity() {
+abstract class AbsBaseActivity<V : ViewBinding>(
+    private val bindingInflater: (LayoutInflater) -> V,
+) : AppCompatActivity() {
     lateinit var binding: V
 
     /**
@@ -42,33 +46,42 @@ abstract class AbsBaseActivity<V : ViewDataBinding> : AppCompatActivity() {
         com.example.depthwallpaper.core.WallpaperUi.syncLockScreen(this)
     }
 
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(com.example.depthwallpaper.core.LanguageManager.wrap(newBase))
+    }
+
+    /**
+     * Back button/gesture. Return true when the screen handled it (for example by closing the whole
+     * app); false lets the screen simply close.
+     */
+    protected open fun handleBackPressed(): Boolean = false
+
     /** true: status bar icons are drawn dark (light screens). */
     protected open val lightStatusBar: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         hideNavigation(isBlack = lightStatusBar)
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (!handleBackPressed()) finish()
+            }
+        })
         if (inflateAsync) {
             setContentView(FrameLayout(this).apply {
                 if (placeholderBackground != 0) setBackgroundResource(placeholderBackground)
             })
             lifecycleScope.launch {
-                val view = withContext(Dispatchers.Default) {
-                    LayoutInflater.from(this@AbsBaseActivity).inflate(getLayoutId(), null)
-                }
-                binding = DataBindingUtil.bind<V>(view)
-                    ?: throw IllegalStateException("Layout ${getLayoutId()} is not a data binding layout")
-                binding.lifecycleOwner = this@AbsBaseActivity
-                setContentView(view)
+                binding = withContext(Dispatchers.Default) { bindingInflater(layoutInflater) }
+                setContentView(binding.root)
                 applySystemBarPadding()
                 initView()
                 initAction()
                 onBindingReady()
             }
         } else {
-            binding = DataBindingUtil.setContentView(this, getLayoutId())
-            // LiveData used in layout expressions (@{vm.x}) update the views while the screen is alive.
-            binding.lifecycleOwner = this
+            binding = bindingInflater(layoutInflater)
+            setContentView(binding.root)
             applySystemBarPadding()
             initView()
             initAction()
@@ -81,12 +94,15 @@ abstract class AbsBaseActivity<V : ViewDataBinding> : AppCompatActivity() {
         if (hasFocus) hideNavigation(isBlack = lightStatusBar)
     }
 
+    /** Which view gets the system bar padding; null (default) means the screen's root view. */
+    protected open fun insetsTarget(): android.view.View? = null
+
     /**
      * The window draws behind the status bar and cutout (see hideNavigation), so the screen's root
      * view gets their size added to its own padding. Layouts therefore keep their own padding.
      */
     private fun applySystemBarPadding() {
-        val root = findViewById<ViewGroup>(android.R.id.content).getChildAt(0) ?: return
+        val root = insetsTarget() ?: findViewById<ViewGroup>(android.R.id.content).getChildAt(0) ?: return
         val l = root.paddingLeft
         val t = root.paddingTop
         val r = root.paddingRight
@@ -99,7 +115,6 @@ abstract class AbsBaseActivity<V : ViewDataBinding> : AppCompatActivity() {
         ViewCompat.requestApplyInsets(root)
     }
 
-    abstract fun getLayoutId(): Int
     abstract fun initView()
     abstract fun initAction()
 

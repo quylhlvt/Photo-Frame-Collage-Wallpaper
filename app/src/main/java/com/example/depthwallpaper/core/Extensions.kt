@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import android.view.View
 import android.view.WindowManager
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -38,12 +39,31 @@ fun Activity.hideNavigation(isBlack: Boolean = false) {
     }
 }
 
+/** Shows the view, or hides it completely (GONE). */
+fun View.show(show: Boolean) { visibility = if (show) View.VISIBLE else View.GONE }
+
 /** Tiny flags remembered between launches (onboarding progress). */
 object AppPrefs {
     private fun prefs(ctx: Context) = ctx.getSharedPreferences("app", Context.MODE_PRIVATE)
 
     fun isIntroDone(ctx: Context) = prefs(ctx).getBoolean("introDone", false)
     fun setIntroDone(ctx: Context) = prefs(ctx).edit().putBoolean("introDone", true).apply()
+
+    /** The language screen is shown once, on the very first launch. */
+    fun isLanguageDone(ctx: Context) = prefs(ctx).getBoolean("languageDone", false)
+    fun setLanguageDone(ctx: Context) = prefs(ctx).edit().putBoolean("languageDone", true).apply()
+
+    /** Language chosen by the user (BCP-47 tag such as "vi"); null follows the phone. */
+    fun language(ctx: Context): String? = prefs(ctx).getString("language", null)
+    fun setLanguage(ctx: Context, tag: String) = prefs(ctx).edit().putString("language", tag).apply()
+
+    /** Back presses on the home screen; the rate dialog comes up on every second one. */
+    fun backCount(ctx: Context) = prefs(ctx).getInt("backCount", 0)
+    fun setBackCount(ctx: Context, n: Int) = prefs(ctx).edit().putInt("backCount", n).apply()
+
+    /** True once the user has answered the rate dialog (or rated), so it isn't shown again. */
+    fun isRated(ctx: Context) = prefs(ctx).getBoolean("rated", false)
+    fun setRated(ctx: Context) = prefs(ctx).edit().putBoolean("rated", true).apply()
 
     fun isPermissionDone(ctx: Context) = prefs(ctx).getBoolean("permissionDone", false)
     fun setPermissionDone(ctx: Context) = prefs(ctx).edit().putBoolean("permissionDone", true).apply()

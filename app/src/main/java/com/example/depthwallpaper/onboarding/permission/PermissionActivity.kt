@@ -20,7 +20,7 @@ import com.example.depthwallpaper.home.MainActivity
  * Asks for the one permission that applies to this Android version: notifications on 13+,
  * photo/storage access before that. Both are optional, so Continue always works.
  */
-class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>() {
+class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>(ActivityPermissionBinding::inflate) {
     private val isNotification = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     private val permission = if (isNotification) Manifest.permission.POST_NOTIFICATIONS
     else Manifest.permission.READ_EXTERNAL_STORAGE
@@ -28,13 +28,12 @@ class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>() {
     private val vm: PermissionViewModel by viewModels()
     private var requesting = false
 
-    override fun getLayoutId() = R.layout.activity_permission
-
     override fun initView() {
-        binding.vm = vm // texts, switch state and clicks go through the ViewModel
-        vm.rowClicked.observe(this) { if (it.consume() != null) onRowClicked() }
-        vm.continueClicked.observe(this) {
-            if (it.consume() == null) return@observe
+        binding.permTitle.setText(vm.titleRes)
+        binding.permDesc.setText(vm.descRes)
+        vm.granted.observe(this) { binding.permSwitch.isChecked = it }
+        binding.rowPermission.setOnClickListener { onRowClicked() }
+        binding.btnContinue.setOnClickListener {
             AppPrefs.setPermissionDone(this)
             startActivity(Intent(this, MainActivity::class.java))
             finish()
@@ -78,9 +77,9 @@ class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>() {
         vm.granted.value = granted()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
+    override fun handleBackPressed(): Boolean {
         finishAffinity()
+        return true
     }
 
     private companion object { const val REQ = 1001 }

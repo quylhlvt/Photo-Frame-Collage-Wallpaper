@@ -32,4 +32,32 @@
         <item name="android:textSize">13sp</item>
         <item name="android:alpha">0.7</item>
     </style>
+
+    <style name="DrawerItem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+    <style name="DrawerIcon">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:contentDescription">@null</item>
+    </style>
+    <style name="DrawerText">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">14dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+    <style name="DrawerChevron">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:contentDescription">@null</item>
+        <item name="android:src">@drawable/ic_chevron_white</item>
+    </style>
 </resources>

@@ -2,7 +2,9 @@ package com.example.depthwallpaper.frames
 
 import android.content.Intent
 import android.graphics.Bitmap
+import com.example.depthwallpaper.project.ProjectStore
 import androidx.activity.viewModels
+import com.example.depthwallpaper.core.show
 import com.example.depthwallpaper.staticphoto.CellAdjust
 import android.graphics.Canvas
 import android.graphics.drawable.GradientDrawable
@@ -19,7 +21,7 @@ import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.databinding.ActivityFrameEditorBinding
 
 /** Pick photos from the device into a frame, save, then set it as the wallpaper. */
-class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
+class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>(ActivityFrameEditorBinding::inflate) {
     private lateinit var frame: FrameTemplate
     private lateinit var store: WallpaperStore
     private val photos = mutableListOf<Bitmap?>()
@@ -32,13 +34,12 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
     private var bgColor = FrameRenderer.BG_COLOR
     private var bgImage: Bitmap? = null
 
-    override fun getLayoutId() = R.layout.activity_frame_editor
-
     override fun initView() {
         frame = FrameTemplates.byId(intent.getStringExtra(FrameListActivity.EXTRA_FRAME)) ?: run { finish(); return }
         store = WallpaperStore(this)
-        binding.vm = vm
-        binding.ui = this
+        // The buttons that depend on the state follow the ViewModel.
+        vm.selected.observe(this) { binding.btnReplace.show(it >= 0) }
+        vm.canSet.observe(this) { binding.btnSet.show(it) }
         // The photo lists are rebuilt on every start (e.g. after a rotation), so reset what depends on them.
         vm.selected.value = -1
         vm.canSet.value = false
@@ -78,12 +79,12 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
         })
     }
 
-    override fun initAction() {}
-
-    // Buttons call these straight from the layout.
-    fun chooseAll() = pickImages(multiple = true, slot = -1)
-    fun replaceSelected() { if (selected >= 0) pickImages(multiple = false, slot = selected) }
-    fun setWallpaper() = WallpaperUi.openWallpaperPicker(this)
+    override fun initAction() {
+        binding.btnPick.setOnClickListener { pickImages(multiple = true, slot = -1) }
+        binding.btnReplace.setOnClickListener { if (selected >= 0) pickImages(multiple = false, slot = selected) }
+        binding.btnSave.setOnClickListener { save() }
+        binding.btnSet.setOnClickListener { WallpaperUi.openWallpaperPicker(this) }
+    }
 
     /** Empty card: choose a photo for it. Filled card: select it so it can be moved and zoomed. */
     private fun onSlotTapped(i: Int) {
@@ -144,7 +145,7 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
         }.start()
     }
 
-    fun save() {
+    private fun save() {
         val first = photos.firstOrNull { it != null }
         if (first == null) {
             Toast.makeText(this, R.string.pick_first, Toast.LENGTH_SHORT).show()
@@ -152,7 +153,10 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>() {
         }
         val filled = photos.map { it ?: first } // fill any empty slot
         Thread {
-            store.save(frame, filled, bgColor, bgImage, adjusts.map { CellAdjust(it.zoom, it.cx, it.cy) })
+            val adj = adjusts.map { CellAdjust(it.zoom, it.cx, it.cy) }
+            store.save(frame, filled, bgColor, bgImage, adj)
+            // Every Save also adds an entry to the Project list.
+            runCatching { ProjectStore(this).addFrames(frame, filled, bgColor, bgImage, adj) }
             runOnUiThread {
                 for (i in photos.indices) photos[i] = filled[i]
                 binding.preview.photos = photos.toList()

@@ -11,6 +11,7 @@ activity = "1.12.0"
 constraintlayout = "2.2.1"
 media3 = "1.5.1"
 lifecycle = "2.8.7"
+playReview = "2.0.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -26,6 +27,7 @@ androidx-media3-effect = { group = "androidx.media3", name = "media3-effect", ve
 androidx-media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycle" }
+androidx-play-review-ktx = { group = "com.google.android.play", name = "review-ktx", version.ref = "playReview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

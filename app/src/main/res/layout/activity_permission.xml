@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <data>
-
-        <variable
-            name="vm"
-            type="com.example.depthwallpaper.onboarding.permission.PermissionViewModel" />
-    </data>
-
-    <LinearLayout
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFBFF"
@@ -38,7 +30,6 @@
 
         <TextView
             android:id="@+id/permTitle"
-            android:text="@{vm.titleRes}"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="24dp"
             android:layout_height="wrap_content"
@@ -49,7 +40,6 @@
 
         <TextView
             android:id="@+id/permDesc"
-            android:text="@{vm.descRes}"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="24dp"
             android:layout_height="wrap_content"
@@ -60,7 +50,6 @@
 
         <LinearLayout
             android:id="@+id/rowPermission"
-            android:onClick="@{() -> vm.onRowClick()}"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="24dp"
             android:layout_height="wrap_content"
@@ -80,7 +69,6 @@
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/permSwitch"
-                android:checked="@{vm.granted}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false" />
@@ -88,7 +76,6 @@
 
         <TextView
             android:id="@+id/btnContinue"
-            android:onClick="@{() -> vm.onContinue()}"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="24dp"
             android:layout_height="56dp"
@@ -101,4 +88,3 @@
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>
-</layout>
