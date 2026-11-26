@@ -101,4 +101,6 @@
     <string name="project_download_failed">Could not save to the gallery.</string>
     <string name="project_storage_permission">Allow storage access, then try again.</string>
     <string name="project_set_failed">Could not open this project.</string>
+    <string name="this_action_may_contain_advertising">This action may contain advertising</string>
+    <string name="photo_frame_ncollage_wallpaper">Photo Frame:\nCollage Wallpaper</string>
 </resources>
