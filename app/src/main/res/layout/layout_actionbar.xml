@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shared top bar: back/menu button on the left, a title, and up to two icon buttons on the right.
+     Include it with <include android:id="@+id/actionBar" layout="@layout/layout_actionbar" /> and fill
+     it in code with the helpers in core/ActionBar.kt. Unused parts stay hidden. -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimension_64"
+    android:paddingHorizontal="@dimen/dimension_16">
+
+    <ImageView
+        android:id="@+id/btnActionBarLeft"
+        android:layout_width="@dimen/dimension_40"
+        android:layout_height="@dimen/dimension_40"
+        android:layout_gravity="center_vertical|start"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null"
+        android:padding="@dimen/dimension_8"
+        android:src="@drawable/ic_back"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/tvStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|start"
+        android:layout_marginHorizontal="@dimen/dimension_56"
+        android:ellipsize="marquee"
+        android:gravity="start|center_vertical"
+        android:singleLine="true"
+        android:textColor="#2B2B3A"
+        android:textSize="@dimen/text_size_22"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tvCenter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/dimension_56"
+        android:ellipsize="marquee"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="#2B2B3A"
+        android:textSize="@dimen/text_size_22"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/btnActionBarRight1"
+        android:layout_width="@dimen/dimension_40"
+        android:layout_height="@dimen/dimension_40"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="@dimen/dimension_48"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null"
+        android:padding="@dimen/dimension_6"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/btnActionBarRight"
+        android:layout_width="@dimen/dimension_40"
+        android:layout_height="@dimen/dimension_40"
+        android:layout_gravity="center_vertical|end"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@null"
+        android:padding="@dimen/dimension_6"
+        android:visibility="invisible" />
+</FrameLayout>

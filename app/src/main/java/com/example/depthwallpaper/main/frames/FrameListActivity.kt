@@ -6,12 +6,18 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
+import com.example.depthwallpaper.core.setTitle
+import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.SamplePhoto
 import com.example.depthwallpaper.databinding.ActivityFrameListBinding
 
 /** Mode 2: list of frames; tap one to open the editor. */
 class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFrameListBinding::inflate) {
     override fun initView() {
+        binding.actionBar.apply {
+            setTitle(getString(R.string.choose_frame))
+            setLeft { onBackPressedDispatcher.onBackPressed() }
+        }
         val sample = SamplePhoto.build(resources, 4)
         for (frame in FrameTemplates.all) {
             val row = LinearLayout(this).apply {

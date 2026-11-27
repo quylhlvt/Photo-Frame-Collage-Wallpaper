@@ -18,6 +18,10 @@ import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.core.show
+import com.example.depthwallpaper.core.setLeft
+import com.example.depthwallpaper.core.setRight
+import com.example.depthwallpaper.core.setTitle
+import com.example.depthwallpaper.core.showRight
 import com.example.depthwallpaper.databinding.ActivityProjectBinding
 import com.example.depthwallpaper.databinding.PopupProjectMenuBinding
 import com.example.depthwallpaper.main.service.DepthWallpaperService
@@ -48,15 +52,19 @@ class ProjectActivity : AbsBaseActivity<ActivityProjectBinding>(ActivityProjectB
         vm.selectedIds.observe(this) { refresh() }
         // The trash, the bottom bar and the empty text follow the ViewModel.
         vm.selecting.observe(this) {
-            binding.btnTrash.show(it)
+            binding.actionBar.showRight(it)
             binding.bottomBar.show(it)
         }
         vm.isEmpty.observe(this) { binding.emptyText.show(it) }
     }
 
     override fun initAction() {
-        binding.btnBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        binding.btnTrash.setOnClickListener { confirmDelete(vm.selectedProjects()) }
+        binding.actionBar.apply {
+            setTitle(getString(R.string.project_title))
+            setLeft { onBackPressedDispatcher.onBackPressed() }
+            setRight(R.drawable.ic_trash_red) { confirmDelete(vm.selectedProjects()) }
+            showRight(false)
+        }
         binding.btnShare.setOnClickListener { share(vm.selectedProjects()) }
         binding.btnDownload.setOnClickListener { download(vm.selectedProjects()) }
     }

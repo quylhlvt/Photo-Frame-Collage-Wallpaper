@@ -14,6 +14,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
+import com.example.depthwallpaper.core.setTitle
+import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.WallpaperStore
 import com.example.depthwallpaper.core.WallpaperUi
@@ -34,6 +36,10 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>(ActivityFrame
     private var bgImage: Bitmap? = null
 
     override fun initView() {
+        binding.actionBar.apply {
+            setTitle(getString(R.string.app_name))
+            setLeft { onBackPressedDispatcher.onBackPressed() }
+        }
         frame = FrameTemplates.byId(intent.getStringExtra(FrameListActivity.EXTRA_FRAME)) ?: run { finish(); return }
         store = WallpaperStore(this)
         // The buttons that depend on the state follow the ViewModel.

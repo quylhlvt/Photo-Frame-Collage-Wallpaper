@@ -2,9 +2,14 @@ package com.example.depthwallpaper.language
 
 import android.content.Intent
 import androidx.activity.viewModels
+import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.AppPrefs
 import com.example.depthwallpaper.core.show
+import com.example.depthwallpaper.core.setLeft
+import com.example.depthwallpaper.core.setRight
+import com.example.depthwallpaper.core.setTitle
+import com.example.depthwallpaper.core.showLeft
 import com.example.depthwallpaper.databinding.ActivityLanguageBinding
 import com.example.depthwallpaper.onboarding.intro.IntroActivity
 
@@ -18,9 +23,12 @@ class LanguageActivity : AbsBaseActivity<ActivityLanguageBinding>(ActivityLangua
     private val firstTime get() = !AppPrefs.isLanguageDone(this)
 
     override fun initView() {
-        binding.btnBack.show(!firstTime)
-        binding.btnBack.setOnClickListener { onBackPressedDispatcher.onBackPressed() }
-        binding.btnDone.setOnClickListener { vm.onDone() }
+        binding.actionBar.apply {
+            setTitle(getString(R.string.language))
+            setLeft { onBackPressedDispatcher.onBackPressed() }
+            showLeft(!firstTime)
+            setRight(R.drawable.ic_check_blue) { vm.onDone() }
+        }
         val adapter = LanguageAdapter(vm.languages) { vm.select(it.tag) }
         binding.list.adapter = adapter
         vm.selected.value = AppPrefs.language(this) ?: "en"

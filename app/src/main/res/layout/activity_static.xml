@@ -5,31 +5,11 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="@dimen/dimension_16"
-            android:paddingVertical="@dimen/dimension_8">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/diy"
-                android:textSize="@dimen/text_size_22"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/btnAdd"
-                android:layout_width="@dimen/dimension_40"
-                android:layout_height="@dimen/dimension_40"
-                android:layout_gravity="end|center_vertical"
-                android:background="@drawable/bg_plus"
-                android:gravity="center"
-                android:text="+"
-                android:textColor="#FFFFFF"
-                android:textSize="@dimen/text_size_26" />
-        </FrameLayout>
+        <include
+        android:id="@+id/actionBar"
+        layout="@layout/layout_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
         <ScrollView
             android:layout_width="match_parent"

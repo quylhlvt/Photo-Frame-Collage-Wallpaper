@@ -13,6 +13,9 @@ import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.SamplePhoto
 import com.example.depthwallpaper.core.WallpaperUi
+import com.example.depthwallpaper.core.setLeft
+import com.example.depthwallpaper.core.setRight
+import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.databinding.ActivityStaticBinding
 
 /** Mode 1 (DIY): ready-made collage templates. Tap one to edit it, or tap "+" to start from your own photos. */
@@ -28,9 +31,13 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
     }
 
     override fun initAction() {
-        binding.btnAdd.setOnClickListener {
-            @Suppress("DEPRECATION")
-            startActivityForResult(WallpaperUi.pickIntent("image/*", multiple = true), REQ_PICK)
+        binding.actionBar.apply {
+            setTitle(getString(R.string.diy))
+            setLeft { onBackPressedDispatcher.onBackPressed() }
+            setRight(R.drawable.ic_add_pink) {
+                @Suppress("DEPRECATION")
+                startActivityForResult(WallpaperUi.pickIntent("image/*", multiple = true), REQ_PICK)
+            }
         }
     }
 

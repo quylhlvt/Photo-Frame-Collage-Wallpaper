@@ -13,6 +13,8 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
+import com.example.depthwallpaper.core.setTitle
+import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.databinding.ActivityCollageEditorBinding
 import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.WallpaperStore
@@ -37,6 +39,10 @@ class CollageEditorActivity : AbsBaseActivity<ActivityCollageEditorBinding>(Acti
     private var pendingCell = -1
 
     override fun initView() {
+        binding.actionBar.apply {
+            setTitle(getString(R.string.diy))
+            setLeft { onBackPressedDispatcher.onBackPressed() }
+        }
         store = WallpaperStore(this)
         // Texts and buttons that depend on the selection / photo count follow the ViewModel.
         vm.selected.observe(this) { updateTexts() }

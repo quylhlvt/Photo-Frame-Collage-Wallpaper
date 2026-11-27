@@ -7,39 +7,11 @@
     android:background="#FFFFFF"
     android:orientation="vertical">
 
-    <FrameLayout
+    <include
+        android:id="@+id/actionBar"
+        layout="@layout/layout_actionbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimension_64"
-        android:paddingHorizontal="@dimen/dimension_16">
-
-        <ImageView
-            android:id="@+id/btnBack"
-            android:layout_width="@dimen/dimension_40"
-            android:layout_height="@dimen/dimension_40"
-            android:layout_gravity="center_vertical"
-            android:contentDescription="@null"
-            android:padding="@dimen/dimension_8"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/project_title"
-            android:textColor="#2B2B3A"
-            android:textSize="@dimen/text_size_22"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/btnTrash"
-            android:layout_width="@dimen/dimension_40"
-            android:layout_height="@dimen/dimension_40"
-            android:layout_gravity="center_vertical|end"
-            android:contentDescription="@string/project_delete"
-            android:padding="@dimen/dimension_6"
-            android:src="@drawable/ic_trash_red"
-            android:visibility="gone" />
-    </FrameLayout>
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:layout_width="match_parent"

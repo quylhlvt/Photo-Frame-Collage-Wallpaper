@@ -13,6 +13,8 @@ import java.io.File
 import android.widget.Toast
 import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
+import com.example.depthwallpaper.core.setTitle
+import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.WallpaperStore
 import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.databinding.ActivityVideoBinding
@@ -26,6 +28,10 @@ class VideoActivity : AbsBaseActivity<ActivityVideoBinding>(ActivityVideoBinding
     private var busy = false
 
     override fun initView() {
+        binding.actionBar.apply {
+            setTitle(getString(R.string.home_dynamic))
+            setLeft { onBackPressedDispatcher.onBackPressed() }
+        }
         store = WallpaperStore(this)
         // Everything that changes on screen follows the ViewModel.
         vm.preview.observe(this) { if (it != null) binding.preview.setImageBitmap(it) }

@@ -8,16 +8,11 @@
         android:orientation="vertical"
         >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_marginHorizontal="@dimen/dimension_24"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimension_20"
-            android:gravity="center"
-            android:text="@string/permission"
-            android:textColor="#2B2B3A"
-            android:textSize="@dimen/text_size_22"
-            android:textStyle="bold" />
+        <include
+        android:id="@+id/actionBar"
+        layout="@layout/layout_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
         <ImageView
             android:layout_width="match_parent"

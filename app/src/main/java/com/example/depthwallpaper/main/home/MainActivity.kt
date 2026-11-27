@@ -11,6 +11,9 @@ import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.AppPrefs
 import com.example.depthwallpaper.core.RateHelper
 import com.example.depthwallpaper.core.SamplePhoto
+import com.example.depthwallpaper.core.setLeft
+import com.example.depthwallpaper.core.setRight
+import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.databinding.ActivityHomeBinding
 import com.example.depthwallpaper.main.frames.EditorActivity
 import com.example.depthwallpaper.main.frames.FrameListActivity
@@ -34,8 +37,11 @@ class MainActivity : AbsBaseActivity<ActivityHomeBinding>(ActivityHomeBinding::i
     }
 
     override fun initAction() {
-        binding.btnMenu.setOnClickListener { openDrawer() }
-        binding.btnAvatar.setOnClickListener { openProject() }
+        binding.actionBar.apply {
+            setTitle(getString(R.string.home_title))
+            setLeft(R.drawable.ic_menu) { openDrawer() }
+            setRight(R.drawable.ic_project) { openProject() }
+        }
         binding.cardStatic.setOnClickListener { openStatic() }
         binding.cardFrames.setOnClickListener { openFrames() }
         binding.cardVideo.setOnClickListener { openVideo() }

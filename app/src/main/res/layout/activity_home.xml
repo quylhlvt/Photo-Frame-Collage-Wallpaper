@@ -12,39 +12,11 @@
             android:background="#FFFFFF"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dimension_64"
-                android:paddingHorizontal="@dimen/dimension_16">
-
-                <ImageView
-                    android:id="@+id/btnMenu"
-                    android:layout_width="@dimen/dimension_40"
-                    android:layout_height="@dimen/dimension_40"
-                    android:layout_gravity="center_vertical"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/dimension_6"
-                    android:src="@drawable/ic_menu" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/home_title"
-                    android:textColor="#2B2B3A"
-                    android:textSize="@dimen/text_size_22"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/btnAvatar"
-                    android:layout_width="@dimen/dimension_40"
-                    android:layout_height="@dimen/dimension_40"
-                    android:layout_gravity="center_vertical|end"
-                    android:background="@drawable/bg_hot_item"
-                    android:contentDescription="@null"
-                    android:padding="@dimen/dimension_4"
-                    android:src="@drawable/ic_card_polaroids" />
-            </FrameLayout>
+            <include
+        android:id="@+id/actionBar"
+        layout="@layout/layout_actionbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
             <ScrollView
                 android:layout_width="match_parent"
