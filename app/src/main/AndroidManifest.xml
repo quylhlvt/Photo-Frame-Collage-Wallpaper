@@ -29,7 +29,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".project.ProjectActivity"
+            android:name="com.example.depthwallpaper.main.project.ProjectActivity"
             android:exported="false" />
         <activity
             android:name=".language.LanguageActivity"
@@ -41,23 +41,23 @@
             android:name=".onboarding.permission.PermissionActivity"
             android:exported="false" />
         <activity
-            android:name=".home.MainActivity"
+            android:name="com.example.depthwallpaper.main.home.MainActivity"
             android:exported="false" />
 
         <activity
-            android:name=".staticphoto.CollageEditorActivity"
+            android:name="com.example.depthwallpaper.main.staticphoto.CollageEditorActivity"
             android:exported="false" />
         <activity
-            android:name=".frames.FrameListActivity"
+            android:name="com.example.depthwallpaper.main.frames.FrameListActivity"
             android:exported="false" />
         <activity
-            android:name=".staticphoto.StaticActivity"
+            android:name="com.example.depthwallpaper.main.staticphoto.StaticActivity"
             android:exported="false" />
         <activity
-            android:name=".video.VideoActivity"
+            android:name="com.example.depthwallpaper.main.video.VideoActivity"
             android:exported="false" />
         <activity
-            android:name=".frames.EditorActivity"
+            android:name="com.example.depthwallpaper.main.frames.EditorActivity"
             android:exported="false" />
 
         <provider
@@ -71,7 +71,7 @@
         </provider>
 
         <service
-            android:name=".service.DepthWallpaperService"
+            android:name="com.example.depthwallpaper.main.service.DepthWallpaperService"
             android:exported="true"
             android:label="@string/image_wallpaper_name"
             android:permission="android.permission.BIND_WALLPAPER">
@@ -84,7 +84,7 @@
         </service>
 
         <service
-            android:name=".service.VideoWallpaperService"
+            android:name="com.example.depthwallpaper.main.service.VideoWallpaperService"
             android:exported="true"
             android:label="@string/video_wallpaper_name"
             android:permission="android.permission.BIND_WALLPAPER">

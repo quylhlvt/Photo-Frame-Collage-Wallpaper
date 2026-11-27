@@ -1,7 +1,7 @@
 package com.example.depthwallpaper.core
 
-import com.example.depthwallpaper.frames.*
-import com.example.depthwallpaper.staticphoto.CellAdjust
+import com.example.depthwallpaper.main.frames.*
+import com.example.depthwallpaper.main.staticphoto.CellAdjust
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

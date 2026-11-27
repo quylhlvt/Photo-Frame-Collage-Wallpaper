@@ -13,7 +13,7 @@ class SplashActivity : AbsBaseActivity<ActivitySplashBinding>(ActivitySplashBind
     private val vm: SplashViewModel by viewModels()
 
     override fun initView() {
-        vm.progress.observe(this) { binding.progress.progress = it }
+//        vm.progress.observe(this) { binding.progress.progress = it }
         vm.finished.observe(this) { event ->
             if (event.consume() != null) navigate()
         }

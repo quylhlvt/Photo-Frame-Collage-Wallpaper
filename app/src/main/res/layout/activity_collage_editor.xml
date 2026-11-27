@@ -13,7 +13,7 @@
             android:id="@+id/hint"
             style="@style/HintText" />
 
-        <com.example.depthwallpaper.staticphoto.CollagePreviewView
+        <com.example.depthwallpaper.main.staticphoto.CollagePreviewView
             android:id="@+id/preview"
             android:layout_width="wrap_content"
             android:layout_height="0dp"

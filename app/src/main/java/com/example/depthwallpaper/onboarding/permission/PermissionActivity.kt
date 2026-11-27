@@ -14,7 +14,7 @@ import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.AppPrefs
 import com.example.depthwallpaper.databinding.ActivityPermissionBinding
-import com.example.depthwallpaper.home.MainActivity
+import com.example.depthwallpaper.main.home.MainActivity
 
 /**
  * Asks for the one permission that applies to this Android version: notifications on 13+,

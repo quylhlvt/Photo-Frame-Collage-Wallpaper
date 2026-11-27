@@ -7,7 +7,7 @@ import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.AppPrefs
 import com.example.depthwallpaper.databinding.ActivityIntroBinding
-import com.example.depthwallpaper.home.MainActivity
+import com.example.depthwallpaper.main.home.MainActivity
 import com.example.depthwallpaper.onboarding.permission.PermissionActivity
 
 /** Three swipeable pages; the last "Next" goes to the permission screen (or home if already done). */

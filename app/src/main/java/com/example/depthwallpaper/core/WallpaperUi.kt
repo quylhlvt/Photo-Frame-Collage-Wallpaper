@@ -1,13 +1,9 @@
 package com.example.depthwallpaper.core
 
-import com.example.depthwallpaper.frames.*
-import com.example.depthwallpaper.service.*
+import com.example.depthwallpaper.main.frames.*
+import com.example.depthwallpaper.main.service.*
 import android.app.Activity
-import androidx.appcompat.app.AlertDialog
-import android.graphics.Bitmap
 import android.os.Build
-import android.widget.Toast
-import com.example.depthwallpaper.R
 import android.app.WallpaperManager
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
