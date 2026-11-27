@@ -95,6 +95,9 @@ abstract class AbsBaseActivity<V : ViewBinding>(
         if (hasFocus) hideNavigation(isBlack = lightStatusBar)
     }
 
+    /** true: the content's top edge (e.g. a full-bleed image) goes behind the status bar instead of below it. */
+    protected open val drawBehindStatusBar: Boolean = false
+
     /** Which view gets the system bar padding; null (default) means the screen's root view. */
     protected open fun insetsTarget(): android.view.View? = null
 
@@ -110,7 +113,7 @@ abstract class AbsBaseActivity<V : ViewBinding>(
         val b = root.paddingBottom
         ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
-            v.setPadding(l + bars.left, t + bars.top, r + bars.right, b + bars.bottom)
+            v.setPadding(l + bars.left, if (drawBehindStatusBar) t else t + bars.top, r + bars.right, b + bars.bottom)
             insets
         }
         ViewCompat.requestApplyInsets(root)

@@ -13,6 +13,9 @@ import com.example.depthwallpaper.onboarding.permission.PermissionActivity
 class IntroActivity : AbsBaseActivity<ActivityIntroBinding>(ActivityIntroBinding::inflate) {
     private val vm: IntroViewModel by viewModels()
 
+    /** The intro pictures fill the screen right up to the top edge. */
+    override val drawBehindStatusBar = true
+
     override fun initView() {
         binding.viewPager.adapter = IntroAdapter(vm.pages)
         binding.dotsIndicator.attachTo(binding.viewPager)
