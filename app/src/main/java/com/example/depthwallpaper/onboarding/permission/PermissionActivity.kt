@@ -12,7 +12,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
-import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.core.AppPrefs
 import com.example.depthwallpaper.databinding.ActivityPermissionBinding
 import com.example.depthwallpaper.main.home.MainActivity
@@ -30,10 +29,9 @@ class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>(ActivityPe
     private var requesting = false
 
     override fun initView() {
-        binding.actionBar.setTitle(getString(R.string.permission))
-        binding.permTitle.setText(vm.titleRes)
-        binding.permDesc.setText(vm.descRes)
-        vm.granted.observe(this) { binding.permSwitch.isChecked = it }
+        binding.permName.setText(vm.titleRes)
+        binding.permTitle.setText(vm.descRes)
+        vm.granted.observe(this) { binding.permSwitch.setImageResource(if (it) R.drawable.switch_on else R.drawable.switch_off) }
         binding.rowPermission.setOnClickListener { onRowClicked() }
         binding.btnContinue.setOnClickListener {
             AppPrefs.setPermissionDone(this)
