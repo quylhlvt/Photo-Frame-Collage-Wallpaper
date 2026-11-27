@@ -16,7 +16,8 @@ class IntroActivity : AbsBaseActivity<ActivityIntroBinding>(ActivityIntroBinding
     override fun initView() {
         binding.viewPager.adapter = IntroAdapter(vm.pages)
         binding.dotsIndicator.attachTo(binding.viewPager)
-//        vm.buttonText.observe(this) { binding.btnNext.setText(it) }
+        // The ViewModel owns the page; scroll the pager when it changes (Next button).
+        vm.page.observe(this) { if (binding.viewPager.currentItem != it) binding.viewPager.setCurrentItem(it, true) }
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 vm.page.value = position
