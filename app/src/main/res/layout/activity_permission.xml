@@ -6,52 +6,47 @@
     android:layout_height="match_parent"
     android:background="#FFFBFF">
 
-    <TextView
-        android:id="@+id/titlePermission"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dimension_16"
-        android:layout_marginTop="@dimen/dimension_20"
-        android:gravity="start"
-        android:text="@string/permission"
-        android:textColor="@color/app_color"
-        android:textSize="@dimen/text_size_24"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include
+            android:id="@+id/actionBar"
+            layout="@layout/layout_actionbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     <ImageView
         android:id="@+id/imv"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="@dimen/dimension_80"
+        android:layout_marginHorizontal="@dimen/dimension_100"
         android:contentDescription="@null"
-        android:src="@drawable/ic_permission"
+        app:layout_constraintDimensionRatio="1.51:1.63"
+        android:layout_marginBottom="@dimen/dimension_40"
+        android:src="@drawable/img_ava_permission"
         app:layout_constraintBottom_toTopOf="@+id/permTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titlePermission" />
+        app:layout_constraintTop_toBottomOf="@+id/actionBar" />
 
     <TextView
         android:id="@+id/permTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dimension_6"
-        android:layout_marginBottom="@dimen/dimension_10"
+        android:layout_marginBottom="@dimen/dimension_18"
         android:gravity="center"
         android:paddingHorizontal="@dimen/dimension_16"
-        android:textColor="#2B2B3A"
-        android:textSize="@dimen/text_size_16"
+        android:textColor="@color/gray2"
+        android:textSize="@dimen/text_size_14"
         app:layout_constraintBottom_toTopOf="@+id/rowPermission" />
 
     <!-- One row, filled in for the permission that applies (notifications on Android 13+, storage before). -->
     <RelativeLayout
         android:id="@+id/rowPermission"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimension_50"
+        android:elevation="@dimen/dimension_2"
+        android:layout_height="@dimen/dimension_56"
         android:layout_marginHorizontal="@dimen/dimension_16"
-        android:layout_marginBottom="@dimen/dimension_20"
-        android:background="@drawable/bg_card_border_100_false"
+        android:layout_marginBottom="@dimen/dimension_100"
+        android:background="@drawable/bg_language"
         app:layout_constraintBottom_toTopOf="@+id/btnContinue">
 
         <TextView
@@ -59,33 +54,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dimension_16"
-            android:textColor="@color/app_color"
-            android:textSize="@dimen/text_size_16" />
+            android:layout_marginStart="@dimen/dimension_24"
+            android:textColor="@color/black"
+            android:fontFamily="@font/roboto_regular"
+            android:textSize="@dimen/text_size_18" />
 
         <ImageView
             android:id="@+id/permSwitch"
             android:layout_width="@dimen/dimension_56"
-            android:layout_height="@dimen/dimension_32"
+            android:layout_height="@dimen/dimension_25"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/dimension_16"
+            android:layout_marginEnd="@dimen/dimension_20"
             android:contentDescription="@null"
-            android:src="@drawable/switch_off" />
+            android:src="@drawable/switch_on" />
     </RelativeLayout>
 
     <TextView
         android:id="@+id/btnContinue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dimension_16"
-        android:layout_marginBottom="@dimen/dimension_24"
+        android:layout_marginBottom="@dimen/dimension_50"
         android:gravity="center"
         android:padding="@dimen/dimension_3"
         android:text="@string/continue_text"
         android:textColor="@color/app_color"
         android:textSize="@dimen/text_size_16"
         android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
