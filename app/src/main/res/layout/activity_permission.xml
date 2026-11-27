@@ -33,15 +33,6 @@
             android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/permDesc"
-            android:layout_width="match_parent"
-            android:layout_marginHorizontal="@dimen/dimension_24"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimension_6"
-            android:gravity="center"
-            android:textColor="#5C5C6B"
-            android:textSize="@dimen/text_size_15" />
 
         <LinearLayout
             android:id="@+id/rowPermission"

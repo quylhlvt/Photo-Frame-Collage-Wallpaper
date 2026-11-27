@@ -30,7 +30,7 @@ class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>(ActivityPe
     private var requesting = false
 
     override fun initView() {
-        binding.actionBar.setTitle(getString(R.string.permission))
+        binding.actionBar.setTitle(getString(R.string.permission), false)
         binding.permTitle.setText(vm.titleRes)
         binding.permDesc.setText(vm.descRes)
         vm.granted.observe(this) { binding.permSwitch.isChecked = it }
