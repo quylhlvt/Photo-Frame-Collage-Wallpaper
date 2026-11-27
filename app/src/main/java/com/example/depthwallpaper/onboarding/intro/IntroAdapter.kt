@@ -14,6 +14,7 @@ class IntroAdapter(private val pages: List<IntroModel>) : RecyclerView.Adapter<I
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val page = pages[position]
+        holder.binding.title.isSelected = true
         holder.binding.image.setImageResource(page.image)
         holder.binding.title.setText(page.title)
         holder.binding.content.setText(page.content)

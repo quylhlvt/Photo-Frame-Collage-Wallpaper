@@ -21,8 +21,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimension_10"
             android:gravity="center"
+            android:layout_marginHorizontal="@dimen/dimension_30"
             android:textColor="@color/app_color"
-            android:textSize="@dimen/text_size_24"
+            android:textSize="@dimen/text_size_18"
             android:fontFamily="@font/rowdies_regular"
             android:singleLine="true"/>
 
@@ -32,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimension_12"
             android:gravity="center"
+            android:layout_marginHorizontal="@dimen/dimension_30"
             android:fontFamily="@font/roboto_regular"
             android:textColor="@color/yellow2"
             android:textSize="@dimen/text_size_12" />

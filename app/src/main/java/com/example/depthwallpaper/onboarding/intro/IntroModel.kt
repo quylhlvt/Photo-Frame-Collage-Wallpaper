@@ -13,8 +13,8 @@ data class IntroModel(
 
 object IntroData {
     val pages = listOf(
-        IntroModel(0, R.drawable.ic_intro_collage, R.string.intro_title_1, R.string.intro_content_1),
-        IntroModel(1, R.drawable.ic_intro_frames, R.string.intro_title_2, R.string.intro_content_2),
-        IntroModel(2, R.drawable.ic_intro_video, R.string.intro_title_3, R.string.intro_content_3),
+        IntroModel(0, R.drawable.ic_intro_1, R.string.intro_title_1, R.string.intro_content_1),
+        IntroModel(1, R.drawable.ic_intro_2, R.string.intro_title_2, R.string.intro_content_2),
+        IntroModel(2, R.drawable.ic_intro_3, R.string.intro_title_3, R.string.intro_content_3),
     )
 }
