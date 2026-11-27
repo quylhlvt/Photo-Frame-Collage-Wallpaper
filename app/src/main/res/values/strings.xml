@@ -57,7 +57,8 @@
     <string name="permission_storage">Photos and storage</string>
     <string name="permission_storage_desc">Allow access to your photos and videos so you can use them in wallpapers.</string>
     <string name="permission_allow_prefix">Allow</string>
-    <string name="permission_request_suffix">to use the following permissions so the app can work properly.</string>
+    <string name="permission_request_suffix">to access photos on your device</string>
+    <string name="permission_request_suffix_13">to access notification on your device</string>
     <string name="permission_settings_notification">We need push notification permission to be able to use the app\'s functions. Open settings now?</string>
     <string name="permission_settings_storage">We need storage permission to be able to use the app\'s functions. Open settings now?</string>
     <string name="permission_go_settings">Settings</string>

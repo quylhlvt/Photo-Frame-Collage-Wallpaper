@@ -46,7 +46,7 @@ class PermissionActivity : AbsBaseActivity<ActivityPermissionBinding>(ActivityPe
             append(getString(R.string.app_name))
             setSpan(ForegroundColorSpan(ContextCompat.getColor(this@PermissionActivity, R.color.app_color)), start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
             setSpan(StyleSpan(Typeface.BOLD), start, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            append(' ').append(getString(R.string.permission_request_suffix))
+            append(' ').append(getString(if (isNotification) R.string.permission_request_suffix_13 else R.string.permission_request_suffix))
         }
         vm.granted.observe(this) { binding.permSwitch.setImageResource(if (it) R.drawable.switch_on else R.drawable.switch_off) }
         binding.rowPermission.setOnClickListener { onRowClicked() }
