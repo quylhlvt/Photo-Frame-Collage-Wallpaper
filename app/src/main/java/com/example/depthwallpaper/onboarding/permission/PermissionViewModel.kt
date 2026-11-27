@@ -9,7 +9,6 @@ import com.example.depthwallpaper.R
 class PermissionViewModel : ViewModel() {
     private val modern = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
 
-    /** Texts depend on the Android version: notifications on 13+, photo access before. */
     val titleRes = if (modern) R.string.permission_notification else R.string.permission_storage
     val descRes = if (modern) R.string.permission_notification_desc else R.string.permission_storage_desc
 

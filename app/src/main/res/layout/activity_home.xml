@@ -1,215 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/drawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
+    <LinearLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#FFFFFF"
+            android:background="@drawable/bg_home"
             android:orientation="vertical">
 
-            <include
-        android:id="@+id/actionBar"
-        layout="@layout/layout_actionbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <include
+                android:id="@+id/actionBar"
+                layout="@layout/layout_actionbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
-            <ScrollView
+        <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:scrollbars="none">
 
-                <LinearLayout
+            <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/dimension_16"
                     android:paddingBottom="@dimen/dimension_24">
 
-                    <FrameLayout
+                <FrameLayout
                         android:id="@+id/cardStatic"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimension_150"
+                        android:layout_marginHorizontal="@dimen/dimension_22"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimension_8"
-                        android:background="@drawable/bg_home_blue">
-
-                        <TextView
+                >
+                    <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_height="@dimen/dimension_140"
+                            android:background="@drawable/bg_home_blue"/>
+                    <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start|center_vertical"
-                            android:layout_marginStart="@dimen/dimension_22"
-                            android:layout_marginBottom="@dimen/dimension_36"
+                            android:layout_marginStart="@dimen/dimension_16"
                             android:text="@string/home_diy"
                             android:textColor="#FFFFFF"
                             android:textSize="@dimen/text_size_21"
-                            android:textStyle="bold" />
+                            />
 
-                        <ImageView
-                            android:layout_width="@dimen/dimension_125"
-                            android:layout_height="@dimen/dimension_110"
+                    <ImageView
+                            android:layout_width="@dimen/dimension_140"
+                            android:layout_height="@dimen/dimension_160"
                             android:layout_gravity="end|center_vertical"
-                            android:layout_marginEnd="@dimen/dimension_10"
+                            android:rotation="-13"
+                            android:layout_marginEnd="@dimen/dimension_7"
+                            android:scaleType="centerInside"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_card_polaroids" />
+                            android:src="@drawable/img_diy"/>
 
-                        <ImageView
-                            android:layout_width="@dimen/dimension_46"
-                            android:layout_height="@dimen/dimension_46"
+                    <ImageView
+                            android:layout_width="@dimen/dimension_48"
+                            android:layout_height="@dimen/dimension_48"
                             android:layout_gravity="start|bottom"
-                            android:layout_marginStart="@dimen/dimension_22"
-                            android:layout_marginBottom="@dimen/dimension_14"
+                            android:layout_marginStart="@dimen/dimension_48"
+                            android:layout_marginBottom="@dimen/dimension_4"
                             android:background="@drawable/bg_arrow_blue"
-                            android:contentDescription="@null"
-                            android:padding="@dimen/dimension_11"
-                            android:src="@drawable/ic_arrow_right_white" />
-                    </FrameLayout>
+                            android:contentDescription="@null"/>
+                </FrameLayout>
 
-                    <FrameLayout
+                <FrameLayout
                         android:id="@+id/cardFrames"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dimension_150"
-                        android:layout_marginTop="@dimen/dimension_16"
-                        android:background="@drawable/bg_home_orange">
-
-                        <TextView
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimension_16">
+                    <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_marginHorizontal="@dimen/dimension_22"
+                            android:layout_height="@dimen/dimension_140"
+                            android:background="@drawable/bg_home_orange"/>
+                    <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start|center_vertical"
-                            android:layout_marginStart="@dimen/dimension_22"
-                            android:layout_marginBottom="@dimen/dimension_36"
+                            android:layout_marginStart="@dimen/dimension_38"
                             android:text="@string/home_diy_live"
                             android:textColor="#FFFFFF"
                             android:textSize="@dimen/text_size_21"
-                            android:textStyle="bold" />
+                            />
 
-                        <ImageView
-                            android:layout_width="@dimen/dimension_125"
-                            android:layout_height="@dimen/dimension_110"
+                    <ImageView
+                            android:layout_width="@dimen/dimension_150"
+                            android:layout_height="@dimen/dimension_155"
                             android:layout_gravity="end|center_vertical"
+                            android:scaleType="centerInside"
                             android:layout_marginEnd="@dimen/dimension_10"
                             android:contentDescription="@null"
-                            android:src="@drawable/ic_card_polaroids" />
-
-                        <ImageView
-                            android:layout_width="@dimen/dimension_46"
-                            android:layout_height="@dimen/dimension_46"
+                            android:src="@drawable/img_diy2"/>
+                    <ImageView
+                            android:layout_width="@dimen/dimension_48"
+                            android:layout_height="@dimen/dimension_48"
                             android:layout_gravity="start|bottom"
-                            android:layout_marginStart="@dimen/dimension_22"
-                            android:layout_marginBottom="@dimen/dimension_14"
+                            android:layout_marginStart="@dimen/dimension_70"
+                            android:layout_marginBottom="@dimen/dimension_4"
                             android:background="@drawable/bg_arrow_orange"
-                            android:contentDescription="@null"
-                            android:padding="@dimen/dimension_11"
-                            android:src="@drawable/ic_arrow_right_white" />
-                    </FrameLayout>
+                            android:contentDescription="@null"/>
+                </FrameLayout>
 
-                    <LinearLayout
+                <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimension_16"
+                        android:gravity="center"
+                        android:paddingHorizontal="@dimen/dimension_2"
+                        android:layout_marginHorizontal="@dimen/dimension_16"
                         android:orientation="horizontal">
 
-                        <LinearLayout
+                    <LinearLayout
                             android:id="@+id/cardVideo"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/dimension_64"
-                            android:layout_marginEnd="@dimen/dimension_8"
+                            android:layout_margin="@dimen/dimension_4"
                             android:layout_weight="1"
                             android:background="@drawable/bg_small_card"
-                            android:elevation="@dimen/dimension_4"
+                            android:elevation="@dimen/dimension_2"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             android:paddingHorizontal="@dimen/dimension_12">
 
-                            <ImageView
+                        <ImageView
                                 android:layout_width="@dimen/dimension_40"
                                 android:layout_height="@dimen/dimension_40"
                                 android:contentDescription="@null"
-                                android:src="@drawable/ic_dynamic" />
+                                android:src="@drawable/ic_dynamic"/>
 
-                            <TextView
+                        <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/dimension_12"
                                 android:text="@string/home_dynamic"
                                 android:textColor="#2B2B3A"
                                 android:textSize="@dimen/text_size_17"
-                                android:textStyle="bold" />
-                        </LinearLayout>
+                                />
+                    </LinearLayout>
 
-                        <LinearLayout
+                    <LinearLayout
                             android:id="@+id/cardProject"
                             android:layout_width="0dp"
                             android:layout_height="@dimen/dimension_64"
-                            android:layout_marginStart="@dimen/dimension_8"
+                            android:layout_margin="@dimen/dimension_4"
                             android:layout_weight="1"
                             android:background="@drawable/bg_small_card"
-                            android:elevation="@dimen/dimension_4"
+                            android:elevation="@dimen/dimension_2"
                             android:gravity="center_vertical"
                             android:orientation="horizontal"
                             android:paddingHorizontal="@dimen/dimension_12">
 
-                            <ImageView
+                        <ImageView
                                 android:layout_width="@dimen/dimension_40"
                                 android:layout_height="@dimen/dimension_40"
                                 android:contentDescription="@null"
-                                android:src="@drawable/ic_project" />
+                                android:src="@drawable/ic_project"/>
 
-                            <TextView
+                        <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="@dimen/dimension_12"
                                 android:text="@string/home_project"
                                 android:textColor="#2B2B3A"
                                 android:textSize="@dimen/text_size_17"
-                                android:textStyle="bold" />
-                        </LinearLayout>
+                                />
                     </LinearLayout>
+                </LinearLayout>
 
-                    <FrameLayout
+                <FrameLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dimension_24">
+                        android:layout_marginTop="@dimen/dimension_20">
 
-                        <TextView
+                    <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/home_hot_viral"
-                            android:textColor="#2B2B3A"
-                            android:textSize="@dimen/text_size_20"
-                            android:textStyle="bold" />
+                            android:layout_marginStart="@dimen/dimension_24"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/righteous_regular"
+                            android:textSize="@dimen/text_size_20"/>
 
-                        <TextView
-                            android:id="@+id/btnViewAll"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_gravity="end|center_vertical"
-                            android:text="@string/home_view_all"
-                            android:textColor="#2F6FF0"
-                            android:textSize="@dimen/text_size_14" />
-                    </FrameLayout>
+                            android:layout_width="wrap_content"
+                            android:id="@+id/btnViewAll"
+                            android:layout_marginEnd="@dimen/dimension_16"
+                            android:layout_height="wrap_content">
+                        <TextView
+                                android:id="@+id/txtViewAll"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                android:text="@string/home_view_all"
+                                android:textColor="@color/app_color3"
+                                android:fontFamily="@font/roboto_medium"
+                                android:layout_marginEnd="@dimen/dimension_2"
+                                app:layout_constraintEnd_toStartOf="@+id/imgViewAll"
+                                android:textSize="@dimen/text_size_12"/>
+                        <ImageView android:layout_width="@dimen/dimension_0" android:layout_height="@dimen/dimension_0"
+                                   app:layout_constraintDimensionRatio="7:11"
+                                   android:id="@+id/imgViewAll"
+                                   android:layout_marginVertical="@dimen/dimension_3"
+                                   android:src="@drawable/img_view_all"
+                                   app:layout_constraintBottom_toBottomOf="parent"
+                                   app:layout_constraintEnd_toEndOf="parent"
+                                   app:layout_constraintTop_toTopOf="parent"/>
 
-                    <HorizontalScrollView
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </FrameLayout>
+
+                <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimension_12"
                         android:scrollbars="none">
 
-                        <LinearLayout
+                    <LinearLayout
                             android:id="@+id/hotRow"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" />
-                    </HorizontalScrollView>
-                </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
+                            android:orientation="horizontal"/>
+                </HorizontalScrollView>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="@dimen/dimension_300"
             android:layout_height="match_parent"
             android:layout_gravity="start"
@@ -219,47 +249,48 @@
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/dimension_20">
 
-            <ImageView
+        <ImageView
                 android:id="@+id/drawerLogo"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimension_160"
-                android:layout_marginTop="@dimen/dimension_56"
+                android:layout_height="@dimen/dimension_195"
+                android:layout_marginTop="@dimen/dimension_22"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_splash_logo" />
+                android:src="@drawable/img_ava_permission"/>
 
-            <TextView
+        <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimension_12"
                 android:layout_marginBottom="@dimen/dimension_20"
                 android:gravity="center"
                 android:text="@string/home_title"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/white"
+                android:fontFamily="@font/righteous_regular"
                 android:textSize="@dimen/text_size_20"
-                android:textStyle="bold" />
+                />
 
-            <LinearLayout android:id="@+id/itemLanguage" style="@style/DrawerItem">
-                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_globe" />
-                <TextView style="@style/DrawerText" android:text="@string/menu_language" />
-                <ImageView style="@style/DrawerChevron" />
-            </LinearLayout>
-
-            <LinearLayout android:id="@+id/itemRate" style="@style/DrawerItem">
-                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_star_white" />
-                <TextView style="@style/DrawerText" android:text="@string/menu_rate" />
-                <ImageView style="@style/DrawerChevron" />
-            </LinearLayout>
-
-            <LinearLayout android:id="@+id/itemShare" style="@style/DrawerItem">
-                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_share_white" />
-                <TextView style="@style/DrawerText" android:text="@string/menu_share" />
-                <ImageView style="@style/DrawerChevron" />
-            </LinearLayout>
-
-            <LinearLayout android:id="@+id/itemPrivacy" style="@style/DrawerItem">
-                <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_shield_white" />
-                <TextView style="@style/DrawerText" android:text="@string/menu_privacy" />
-                <ImageView style="@style/DrawerChevron" />
-            </LinearLayout>
+        <LinearLayout android:id="@+id/itemLanguage" style="@style/DrawerItem">
+            <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_globe"/>
+            <TextView style="@style/DrawerText" android:text="@string/menu_language"/>
+            <ImageView style="@style/DrawerChevron"/>
         </LinearLayout>
-    </androidx.drawerlayout.widget.DrawerLayout>
+
+        <LinearLayout android:id="@+id/itemRate" style="@style/DrawerItem">
+            <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_star_white"/>
+            <TextView style="@style/DrawerText" android:text="@string/menu_rate"/>
+            <ImageView style="@style/DrawerChevron"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/itemShare" style="@style/DrawerItem">
+            <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_share_white"/>
+            <TextView style="@style/DrawerText" android:text="@string/menu_share"/>
+            <ImageView style="@style/DrawerChevron"/>
+        </LinearLayout>
+
+        <LinearLayout android:id="@+id/itemPrivacy" style="@style/DrawerItem">
+            <ImageView style="@style/DrawerIcon" android:src="@drawable/ic_shield_white"/>
+            <TextView style="@style/DrawerText" android:text="@string/menu_privacy"/>
+            <ImageView style="@style/DrawerChevron"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

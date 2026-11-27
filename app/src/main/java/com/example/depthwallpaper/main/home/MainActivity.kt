@@ -24,12 +24,8 @@ import com.example.depthwallpaper.main.project.ProjectActivity
 import com.example.depthwallpaper.main.staticphoto.StaticActivity
 import com.example.depthwallpaper.main.video.VideoActivity
 
-/**
- * Home: DIY wallpaper (static collage), DIY live wallpaper (frames), Dynamic (video), Project (saved
- * wallpapers), a "Hot viral" row of frames, and a side menu.
- */
+
 class MainActivity : AbsBaseActivity<ActivityHomeBinding>(ActivityHomeBinding::inflate) {
-    /** The drawer layout covers the whole window, so only the main content gets the status bar padding. */
     override fun insetsTarget(): View? = binding.content
 
     override fun initView() {
@@ -40,7 +36,7 @@ class MainActivity : AbsBaseActivity<ActivityHomeBinding>(ActivityHomeBinding::i
         binding.actionBar.apply {
             setTitle(getString(R.string.home_title))
             setLeft(R.drawable.ic_menu) { openDrawer() }
-            setRight(R.drawable.ic_project) { openProject() }
+            setRight(R.drawable.logo_home){}
         }
         binding.cardStatic.setOnClickListener { openStatic() }
         binding.cardFrames.setOnClickListener { openFrames() }

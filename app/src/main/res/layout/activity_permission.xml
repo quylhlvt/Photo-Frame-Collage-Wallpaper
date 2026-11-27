@@ -74,13 +74,13 @@
         android:id="@+id/btnContinue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dimension_50"
+        android:layout_marginBottom="@dimen/dimension_150"
         android:gravity="center"
         android:padding="@dimen/dimension_3"
         android:text="@string/continue_text"
         android:textColor="@color/app_color"
         android:textSize="@dimen/text_size_16"
-        android:textStyle="bold"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
