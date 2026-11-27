@@ -1,6 +1,7 @@
 package com.example.depthwallpaper.main.staticphoto
 
 import android.content.Context
+import com.example.depthwallpaper.core.dp
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -115,7 +116,7 @@ class LayoutThumbView(ctx: Context, private val layout: CollageLayout) : View(ct
     private val line = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = 0xFF7FA8F8.toInt()
         style = Paint.Style.STROKE
-        strokeWidth = 2f * resources.displayMetrics.density
+        strokeWidth = context.dp(2f)
     }
     private val r = RectF()
     var chosen = false
@@ -128,7 +129,7 @@ class LayoutThumbView(ctx: Context, private val layout: CollageLayout) : View(ct
         r.set(pad, pad, w - pad, h - pad)
         canvas.drawRect(r, fill)
         line.color = if (chosen) 0xFF2F6BFF.toInt() else 0xFF7FA8F8.toInt()
-        line.strokeWidth = (if (chosen) 3f else 1.5f) * resources.displayMetrics.density
+        line.strokeWidth = context.dp(if (chosen) 3f else 1.5f)
         val a = if (layout.fullBleed) r else RectF(r.left + r.width() * 0.06f, r.top + r.height() * 0.14f, r.right - r.width() * 0.06f, r.bottom - r.height() * 0.05f)
         for (c in layout.cells) {
             canvas.drawRect(

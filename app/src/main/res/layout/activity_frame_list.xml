@@ -9,14 +9,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="@dimen/dimension_16">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="12dp"
+                android:paddingBottom="@dimen/dimension_12"
                 android:text="@string/choose_frame"
-                android:textSize="22sp"
+                android:textSize="@dimen/text_size_22"
                 android:textStyle="bold" />
         </LinearLayout>
     </ScrollView>

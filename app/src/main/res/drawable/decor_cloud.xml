@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Replace with your own image: put decor_cloud.png in res/drawable-nodpi and delete this file. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp" android:height="60dp" android:viewportWidth="100" android:viewportHeight="60">
+    android:width="@dimen/dimension_100" android:height="@dimen/dimension_60" android:viewportWidth="100" android:viewportHeight="60">
     <path android:fillColor="#F1B7C6" android:pathData="M20,38 m-16,0 a16,16 0 1,0 32,0 a16,16 0 1,0 -32,0 Z" />
     <path android:fillColor="#F1B7C6" android:pathData="M40,26 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0 Z" />
     <path android:fillColor="#F1B7C6" android:pathData="M64,32 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0 Z" />

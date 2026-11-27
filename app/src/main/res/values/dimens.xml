@@ -104,4 +104,17 @@
     <dimen name="text_size_32">32sp</dimen>
     <dimen name="text_size_40">40sp</dimen>
     <dimen name="text_size_50">50sp</dimen>
+    <dimen name="dimension_52">52dp</dimen>
+    <dimen name="dimension_60">60dp</dimen>
+    <dimen name="dimension_116">116dp</dimen>
+    <dimen name="dimension_118">118dp</dimen>
+    <dimen name="dimension_125">125dp</dimen>
+    <dimen name="dimension_195">195dp</dimen>
+    <dimen name="dimension_300">300dp</dimen>
+    <dimen name="text_size_17">17sp</dimen>
+    <dimen name="text_size_19">19sp</dimen>
+    <dimen name="text_size_21">21sp</dimen>
+    <dimen name="text_size_22">22sp</dimen>
+    <dimen name="text_size_56">56sp</dimen>
+    <item name="ui_scale" type="dimen" format="float">1.0</item>
 </resources>

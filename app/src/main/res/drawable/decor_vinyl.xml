@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Replace with your own image: put decor_vinyl.png in res/drawable-nodpi and delete this file. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp" android:height="100dp" android:viewportWidth="100" android:viewportHeight="100">
+    android:width="@dimen/dimension_100" android:height="@dimen/dimension_100" android:viewportWidth="100" android:viewportHeight="100">
     <path android:pathData="M50,50 m-48,0 a48,48 0 1,0 96,0 a48,48 0 1,0 -96,0 Z">
         <aapt:attr name="android:fillColor" xmlns:aapt="http://schemas.android.com/aapt">
             <gradient android:startX="10" android:startY="10" android:endX="90" android:endY="90" android:type="linear">

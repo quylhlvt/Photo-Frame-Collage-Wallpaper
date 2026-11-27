@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.depthwallpaper.R
+import com.example.depthwallpaper.core.dp
 import com.example.depthwallpaper.core.LanguageManager.Language
 import com.example.depthwallpaper.databinding.ItemLanguageBinding
 
@@ -34,7 +35,7 @@ class LanguageAdapter(
         b.name.setTextColor(if (selected) Color.WHITE else 0xFF2B2B3A.toInt())
         b.radio.setImageResource(if (selected) R.drawable.ic_radio_on else R.drawable.ic_radio_off)
         b.itemRoot.setBackgroundResource(if (selected) R.drawable.bg_language_selected else R.drawable.bg_language)
-        b.itemRoot.elevation = if (selected) 0f else b.root.resources.displayMetrics.density * 4f
+        b.itemRoot.elevation = if (selected) 0f else b.root.context.dp(4f)
         b.root.setOnClickListener { onPick(language) }
     }
 

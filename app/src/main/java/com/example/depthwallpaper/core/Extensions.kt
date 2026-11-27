@@ -39,6 +39,15 @@ fun Activity.hideNavigation(isBlack: Boolean = false) {
     }
 }
 
+/**
+ * How much bigger the UI is than on a phone: 1 normally, 1.5 on tablets (see `ui_scale` in the
+ * values / values-sw600dp dimens files). Sizes built in code use it so they match the layouts.
+ */
+fun Context.uiScale(): Float = androidx.core.content.res.ResourcesCompat.getFloat(resources, com.example.depthwallpaper.R.dimen.ui_scale)
+
+/** dp -> px, including the tablet scale. */
+fun Context.dp(v: Float): Float = v * resources.displayMetrics.density * uiScale()
+
 /** Shows the view, or hides it completely (GONE). */
 fun View.show(show: Boolean) { visibility = if (show) View.VISIBLE else View.GONE }
 

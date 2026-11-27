@@ -10,20 +10,20 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="@dimen/dimension_24"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="@dimen/dimension_20"
             android:gravity="center"
             android:text="@string/permission"
             android:textColor="#2B2B3A"
-            android:textSize="22sp"
+            android:textSize="@dimen/text_size_22"
             android:textStyle="bold" />
 
         <ImageView
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="@dimen/dimension_24"
             android:layout_height="0dp"
-            android:layout_marginVertical="16dp"
+            android:layout_marginVertical="@dimen/dimension_16"
             android:layout_weight="1"
             android:contentDescription="@null"
             android:src="@drawable/ic_permission" />
@@ -31,33 +31,33 @@
         <TextView
             android:id="@+id/permTitle"
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="@dimen/dimension_24"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:textColor="#2B2B3A"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/permDesc"
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="@dimen/dimension_24"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="@dimen/dimension_6"
             android:gravity="center"
             android:textColor="#5C5C6B"
-            android:textSize="15sp" />
+            android:textSize="@dimen/text_size_15" />
 
         <LinearLayout
             android:id="@+id/rowPermission"
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="24dp"
+            android:layout_marginHorizontal="@dimen/dimension_24"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="@dimen/dimension_24"
             android:background="@drawable/bg_card"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:padding="@dimen/dimension_16">
 
             <TextView
                 android:layout_width="0dp"
@@ -65,7 +65,7 @@
                 android:layout_weight="1"
                 android:text="@string/permission_allow"
                 android:textColor="#2B2B3A"
-                android:textSize="17sp" />
+                android:textSize="@dimen/text_size_17" />
 
             <com.google.android.material.materialswitch.MaterialSwitch
                 android:id="@+id/permSwitch"
@@ -77,14 +77,14 @@
         <TextView
             android:id="@+id/btnContinue"
             android:layout_width="match_parent"
-            android:layout_marginHorizontal="24dp"
-            android:layout_height="56dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginHorizontal="@dimen/dimension_24"
+            android:layout_height="@dimen/dimension_56"
+            android:layout_marginTop="@dimen/dimension_20"
+            android:layout_marginBottom="@dimen/dimension_32"
             android:background="@drawable/bg_button"
             android:gravity="center"
             android:text="@string/continue_text"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />
     </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Replace with your own image: put decor_lips.png in res/drawable-nodpi and delete this file. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp" android:height="56dp" android:viewportWidth="100" android:viewportHeight="56">
+    android:width="@dimen/dimension_100" android:height="@dimen/dimension_56" android:viewportWidth="100" android:viewportHeight="56">
     <path
         android:fillColor="#C62828"
         android:pathData="M2,28 C14,0 38,-2 50,22 C62,-2 86,0 98,28 C82,60 18,60 2,28 Z" />

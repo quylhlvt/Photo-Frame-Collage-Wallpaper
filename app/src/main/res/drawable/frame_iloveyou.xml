@@ -2,7 +2,7 @@
 <!-- A frame image: the photo shows through the TRANSPARENT window (found automatically).
      Replace with your own PNG: res/drawable-nodpi/frame_polaroid.png, then delete this file. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp" android:height="118dp" android:viewportWidth="100" android:viewportHeight="118">
+    android:width="@dimen/dimension_100" android:height="@dimen/dimension_118" android:viewportWidth="100" android:viewportHeight="118">
     <path
         android:fillColor="#FFFFFF"
         android:fillType="evenOdd"

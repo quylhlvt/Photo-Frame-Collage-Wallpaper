@@ -87,4 +87,12 @@
     <dimen name="dimension_250">375dp</dimen>
     <dimen name="dimension_314">471dp</dimen>
     <dimen name="dimension_328">492dp</dimen>
+    <dimen name="dimension_52">78dp</dimen>
+    <dimen name="dimension_60">90dp</dimen>
+    <dimen name="dimension_116">174dp</dimen>
+    <dimen name="dimension_118">177dp</dimen>
+    <dimen name="dimension_125">187.5dp</dimen>
+    <dimen name="dimension_195">292.5dp</dimen>
+    <dimen name="dimension_300">450dp</dimen>
+    <item name="ui_scale" type="dimen" format="float">1.5</item>
 </resources>

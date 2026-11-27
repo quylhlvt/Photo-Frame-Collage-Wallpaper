@@ -12,6 +12,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import androidx.lifecycle.lifecycleScope
+import com.example.depthwallpaper.core.dp
 import com.example.depthwallpaper.core.hideNavigation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -118,6 +119,6 @@ abstract class AbsBaseActivity<V : ViewBinding>(
     abstract fun initView()
     abstract fun initAction()
 
-    /** dp -> px helper shared by screens that build parts of their UI in code. */
-    protected fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
+    /** dp -> px helper shared by screens that build parts of their UI in code (scaled up on tablets). */
+    protected fun dp(v: Int) = this.dp(v.toFloat()).toInt()
 }

@@ -2,7 +2,7 @@
 <!-- Gold capsule ring. Everything outside the ring is transparent, and the photo is cut to the
      transparent inside. Replace with res/drawable-nodpi/frame_pill_clouds.png if you like. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="100dp" android:height="195dp" android:viewportWidth="100" android:viewportHeight="195">
+    android:width="@dimen/dimension_100" android:height="@dimen/dimension_195" android:viewportWidth="100" android:viewportHeight="195">
     <path
         android:fillColor="#C8914E"
         android:fillType="evenOdd"

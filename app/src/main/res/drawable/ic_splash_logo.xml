@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="160dp" android:height="160dp" android:viewportWidth="160" android:viewportHeight="160">
+    android:width="@dimen/dimension_160" android:height="@dimen/dimension_160" android:viewportWidth="160" android:viewportHeight="160">
     <path android:fillColor="#E8DEF8" android:pathData="M80,80 m-76,0 a76,76 0 1,0 152,0 a76,76 0 1,0 -152,0 Z" />
     <group android:pivotX="62" android:pivotY="84" android:rotation="-12">
         <path android:fillColor="#FFFFFF" android:pathData="M34,44 H92 V120 H34 Z" />

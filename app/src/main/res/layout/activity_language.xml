@@ -9,16 +9,16 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:paddingHorizontal="16dp">
+            android:layout_height="@dimen/dimension_64"
+            android:paddingHorizontal="@dimen/dimension_16">
 
             <ImageView
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/dimension_40"
+                android:layout_height="@dimen/dimension_40"
                 android:layout_gravity="center_vertical"
                 android:contentDescription="@null"
-                android:padding="8dp"
+                android:padding="@dimen/dimension_8"
                 android:src="@drawable/ic_back" />
 
             <TextView
@@ -27,16 +27,16 @@
                 android:layout_gravity="center"
                 android:text="@string/language"
                 android:textColor="#2B2B3A"
-                android:textSize="22sp"
+                android:textSize="@dimen/text_size_22"
                 android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/btnDone"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/dimension_40"
+                android:layout_height="@dimen/dimension_40"
                 android:layout_gravity="center_vertical|end"
                 android:contentDescription="@string/done"
-                android:padding="6dp"
+                android:padding="@dimen/dimension_6"
                 android:src="@drawable/ic_check_blue" />
         </FrameLayout>
 
@@ -45,8 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingHorizontal="16dp"
-            android:paddingTop="8dp"
-            android:paddingBottom="24dp"
+            android:paddingHorizontal="@dimen/dimension_16"
+            android:paddingTop="@dimen/dimension_8"
+            android:paddingBottom="@dimen/dimension_24"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </LinearLayout>
