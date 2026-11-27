@@ -10,23 +10,17 @@ import com.example.depthwallpaper.databinding.ActivityIntroBinding
 import com.example.depthwallpaper.main.home.MainActivity
 import com.example.depthwallpaper.onboarding.permission.PermissionActivity
 
-/** Three swipeable pages; the last "Next" goes to the permission screen (or home if already done). */
 class IntroActivity : AbsBaseActivity<ActivityIntroBinding>(ActivityIntroBinding::inflate) {
     private val vm: IntroViewModel by viewModels()
 
     override fun initView() {
         binding.viewPager.adapter = IntroAdapter(vm.pages)
-        val dots = listOf(binding.dot1, binding.dot2, binding.dot3)
-        // The ViewModel holds the current page; the views follow it.
-        vm.page.observe(this) { page ->
-            if (binding.viewPager.currentItem != page) binding.viewPager.setCurrentItem(page, true)
-            dots.forEachIndexed { i, dot ->
-                dot.setBackgroundResource(if (i == page) R.drawable.bg_intro_dot_active else R.drawable.bg_intro_dot_inactive)
-            }
-        }
-        vm.buttonText.observe(this) { binding.btnNext.setText(it) }
+        binding.dotsIndicator.attachTo(binding.viewPager)
+//        vm.buttonText.observe(this) { binding.btnNext.setText(it) }
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) { vm.page.value = position }
+            override fun onPageSelected(position: Int) {
+                vm.page.value = position
+            }
         })
         binding.btnNext.setOnClickListener { vm.next() }
         vm.finished.observe(this) { if (it.consume() != null) finishIntro() }

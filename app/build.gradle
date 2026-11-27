@@ -76,4 +76,6 @@ dependencies {
     //quy
     implementation("com.github.lehongquyme:roundedframelayout:release~v1.1")
     implementation ("com.github.lehongquyme:canvasShadow:release~v1.0.1")
+    //dot
+    implementation("com.tbuonomo:dotsindicator:5.1.0")
 }

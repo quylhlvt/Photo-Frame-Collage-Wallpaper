@@ -24,7 +24,8 @@ class LanguageActivity : AbsBaseActivity<ActivityLanguageBinding>(ActivityLangua
 
     override fun initView() {
         binding.actionBar.apply {
-            setTitle(getString(R.string.language))
+
+            setTitle(getString(R.string.language),!firstTime)
             setLeft { onBackPressedDispatcher.onBackPressed() }
             showLeft(!firstTime)
             setRight(R.drawable.ic_check_blue) { vm.onDone() }

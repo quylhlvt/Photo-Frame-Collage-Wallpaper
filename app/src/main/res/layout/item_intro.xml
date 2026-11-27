@@ -4,35 +4,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/dimension_28">
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dimension_24"
             android:layout_weight="1"
             android:contentDescription="@null"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitXY" />
 
         <TextView
             android:id="@+id/title"
+            style="@style/single_marquee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimension_24"
+            android:layout_marginTop="@dimen/dimension_10"
             android:gravity="center"
-            android:textColor="#2B2B3A"
+            android:textColor="@color/app_color"
             android:textSize="@dimen/text_size_24"
-            android:textStyle="bold" />
+            android:fontFamily="@font/rowdies_regular"
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimension_10"
-            android:layout_marginBottom="@dimen/dimension_16"
+            android:layout_marginTop="@dimen/dimension_12"
             android:gravity="center"
-            android:textColor="#5C5C6B"
-            android:textSize="@dimen/text_size_16" />
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/yellow2"
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>

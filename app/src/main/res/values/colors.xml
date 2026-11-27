@@ -8,7 +8,13 @@
     <color name="app_color">#70A7FF</color>
     <color name="app_color2">#FFE5E5</color>
 
-
     <color name="black">#000000</color>
+    <color name="black2">#404040</color>
+
+    <color name="gray">#3C3C3C</color>
+    <color name="gray2">#803C3C3C</color>
+
+    <color name="yellow">#FFEB3B</color>
+    <color name="yellow2">#777259</color>
 
 </resources>
