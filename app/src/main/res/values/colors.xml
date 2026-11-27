@@ -8,4 +8,7 @@
     <color name="app_color">#70A7FF</color>
     <color name="app_color2">#FFE5E5</color>
 
+
+    <color name="black">#000000</color>
+
 </resources>

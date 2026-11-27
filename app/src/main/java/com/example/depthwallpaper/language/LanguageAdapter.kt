@@ -30,12 +30,11 @@ class LanguageAdapter(
         val language = languages[position]
         val selected = language.tag == selectedTag
         val b = holder.binding
-        b.flag.text = language.flag
+        b.flag.setImageResource(language.flagRes)
         b.name.text = language.name
-        b.name.setTextColor(if (selected) Color.WHITE else 0xFF2B2B3A.toInt())
         b.radio.setImageResource(if (selected) R.drawable.ic_radio_on else R.drawable.ic_radio_off)
         b.itemRoot.setBackgroundResource(if (selected) R.drawable.bg_language_selected else R.drawable.bg_language)
-        b.itemRoot.elevation = if (selected) 0f else b.root.context.dp(4f)
+        b.itemRoot.elevation = b.root.context.dp(4f)
         b.root.setOnClickListener { onPick(language) }
     }
 

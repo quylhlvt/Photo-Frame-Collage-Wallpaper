@@ -12,10 +12,12 @@
     <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/appCompatImageView"
             android:layout_width="@dimen/dimension_0"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimension_100"
+            android:layout_height="@dimen/dimension_0"
+            android:layout_marginHorizontal="@dimen/dimension_108"
         app:layout_constraintVertical_bias="1"
+            app:layout_constraintDimensionRatio="1"
             android:layout_marginBottom="@dimen/dimension_20"
+            android:layout_marginTop="@dimen/dimension_100"
             android:adjustViewBounds="true"
             android:src="@drawable/img_splash"
             app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +37,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/progressWrapper"/>
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     <View
