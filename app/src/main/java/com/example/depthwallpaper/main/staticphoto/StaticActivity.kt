@@ -69,7 +69,7 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
                 pendingLayout = layout.id
                 pendingTheme = theme.id
                 pendingCount = layout.count
-                openPicker(layout.count)
+                openPicker(Collages.MAX_PHOTOS)
             }
         }
         box.addView(CollagePreviewView(this).apply {

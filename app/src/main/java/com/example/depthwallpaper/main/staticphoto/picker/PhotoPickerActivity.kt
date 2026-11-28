@@ -4,7 +4,7 @@ import android.content.ClipData
 import android.content.Intent
 import android.view.View
 import android.widget.Toast
-import androidx.activity.PickVisualMediaRequest
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
