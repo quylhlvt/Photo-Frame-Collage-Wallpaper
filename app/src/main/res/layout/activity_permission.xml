@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFBFF">
 
@@ -19,24 +19,26 @@
         android:layout_marginHorizontal="@dimen/dimension_100"
         android:contentDescription="@null"
         app:layout_constraintDimensionRatio="1.51:1.63"
-        android:layout_marginBottom="@dimen/dimension_40"
+        android:layout_marginBottom="@dimen/dimension_120"
+        android:layout_marginTop="@dimen/dimension_24"
+        app:layout_constraintVertical_bias="0"
         android:src="@drawable/img_ava_permission"
-        app:layout_constraintBottom_toTopOf="@+id/permTitle"
+        app:layout_constraintBottom_toTopOf="@+id/btnContinue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/actionBar" />
 
     <TextView
-        android:id="@+id/permTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dimension_6"
-        android:layout_marginBottom="@dimen/dimension_18"
-        android:gravity="center"
-        android:paddingHorizontal="@dimen/dimension_16"
-        android:textColor="@color/gray2"
-        android:textSize="@dimen/text_size_14"
-        app:layout_constraintBottom_toTopOf="@+id/rowPermission" />
+            android:id="@+id/permTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/dimension_6"
+            android:layout_marginTop="@dimen/dimension_40"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/dimension_16"
+            android:textColor="@color/gray2"
+            android:textSize="@dimen/text_size_14"
+            app:layout_constraintTop_toBottomOf="@+id/imv"/>
 
     <!-- One row, filled in for the permission that applies (notifications on Android 13+, storage before). -->
     <RelativeLayout
@@ -45,9 +47,9 @@
         android:elevation="@dimen/dimension_2"
         android:layout_height="@dimen/dimension_56"
         android:layout_marginHorizontal="@dimen/dimension_16"
-        android:layout_marginBottom="@dimen/dimension_100"
+        android:layout_marginTop="@dimen/dimension_18"
         android:background="@drawable/bg_language"
-        app:layout_constraintBottom_toTopOf="@+id/btnContinue">
+        app:layout_constraintTop_toBottomOf="@+id/permTitle">
 
         <TextView
             android:id="@+id/permName"

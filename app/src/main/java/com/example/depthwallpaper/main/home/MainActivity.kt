@@ -36,7 +36,9 @@ class MainActivity : AbsBaseActivity<ActivityHomeBinding>(ActivityHomeBinding::i
         binding.actionBar.apply {
             setTitle(getString(R.string.home_title))
             setLeft(R.drawable.ic_menu) { openDrawer() }
-            setRight(R.drawable.logo_home){}
+//            setRight(R.drawable.logo_home){}
+            btnActionBarRight.setImageResource(R.drawable.logo_home)
+            btnActionBarRight.visibility = View.VISIBLE
         }
         binding.cardStatic.setOnClickListener { openStatic() }
         binding.cardFrames.setOnClickListener { openFrames() }
