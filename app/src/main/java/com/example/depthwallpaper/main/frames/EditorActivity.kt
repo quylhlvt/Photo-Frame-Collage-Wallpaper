@@ -20,7 +20,7 @@ import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.WallpaperStore
 import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.databinding.ActivityFrameEditorBinding
-import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
+import com.example.depthwallpaper.main.picker.PhotoPickerActivity
 
 /** Pick photos from the device into a frame, save, then set it as the wallpaper. */
 class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>(ActivityFrameEditorBinding::inflate) {

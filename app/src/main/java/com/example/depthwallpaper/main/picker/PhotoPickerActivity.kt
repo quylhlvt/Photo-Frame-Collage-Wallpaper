@@ -1,4 +1,4 @@
-package com.example.depthwallpaper.main.staticphoto.picker
+package com.example.depthwallpaper.main.picker
 
 import android.content.Intent
 import android.view.View

@@ -16,7 +16,7 @@ import com.example.depthwallpaper.data.AddedPhotoRepository
 import com.example.depthwallpaper.core.setRight
 import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.databinding.ActivityStaticBinding
-import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
+import com.example.depthwallpaper.main.picker.PhotoPickerActivity
 
 /** Mode 1 (DIY): ready-made collage templates. Tap one to edit it, or tap "+" to start from your own photos. */
 class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBinding::inflate) {

@@ -11,7 +11,7 @@ import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.SamplePhoto
 import com.example.depthwallpaper.data.AddedPhotoRepository
 import com.example.depthwallpaper.databinding.ActivityFrameListBinding
-import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
+import com.example.depthwallpaper.main.picker.PhotoPickerActivity
 
 /** Mode 2: list of frames; tap one to open the editor. */
 class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFrameListBinding::inflate) {
