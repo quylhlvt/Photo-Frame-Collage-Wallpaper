@@ -12,6 +12,9 @@ import com.example.depthwallpaper.onboarding.intro.IntroActivity
 class SplashActivity : AbsBaseActivity<ActivitySplashBinding>(ActivitySplashBinding::inflate) {
     private val vm: SplashViewModel by viewModels()
 
+    /** The logo is centred, so no inset padding: the layout stays still while the bars hide on start. */
+    override val applyInsets = false
+
     override fun initView() {
 //        vm.progress.observe(this) { binding.progress.progress = it }
         vm.finished.observe(this) { event ->

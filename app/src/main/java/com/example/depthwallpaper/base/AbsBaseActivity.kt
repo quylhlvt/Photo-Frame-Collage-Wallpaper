@@ -95,6 +95,9 @@ abstract class AbsBaseActivity<V : ViewBinding>(
         if (hasFocus) hideNavigation(isBlack = lightStatusBar)
     }
 
+    /** false: the screen ignores the system bar sizes (no padding), so nothing moves when the bars change. */
+    protected open val applyInsets: Boolean = true
+
     /** true: the content's top edge (e.g. a full-bleed image) goes behind the status bar instead of below it. */
     protected open val drawBehindStatusBar: Boolean = false
 
@@ -106,13 +109,15 @@ abstract class AbsBaseActivity<V : ViewBinding>(
      * view gets their size added to its own padding. Layouts therefore keep their own padding.
      */
     private fun applySystemBarPadding() {
+        if (!applyInsets) return
         val root = insetsTarget() ?: findViewById<ViewGroup>(android.R.id.content).getChildAt(0) ?: return
         val l = root.paddingLeft
         val t = root.paddingTop
         val r = root.paddingRight
         val b = root.paddingBottom
         ViewCompat.setOnApplyWindowInsetsListener(root) { v, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            // The navigation bar is hidden on purpose, so it is left out: its appearing/disappearing must not move the layout.
+            val bars = insets.getInsets(WindowInsetsCompat.Type.statusBars() or WindowInsetsCompat.Type.displayCutout())
             v.setPadding(l + bars.left, if (drawBehindStatusBar) t else t + bars.top, r + bars.right, b + bars.bottom)
             insets
         }
