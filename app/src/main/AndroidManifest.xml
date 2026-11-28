@@ -54,6 +54,11 @@
 
         <activity
                 android:screenOrientation="portrait"
+                android:name="com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity"
+            android:exported="false" />
+
+        <activity
+                android:screenOrientation="portrait"
                 android:name="com.example.depthwallpaper.main.staticphoto.CollageEditorActivity"
             android:exported="false" />
         <activity

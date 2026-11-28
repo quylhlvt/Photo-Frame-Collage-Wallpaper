@@ -12,11 +12,11 @@ import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.SamplePhoto
-import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.setRight
 import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.databinding.ActivityStaticBinding
+import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
 
 /** Mode 1 (DIY): ready-made collage templates. Tap one to edit it, or tap "+" to start from your own photos. */
 class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBinding::inflate) {
@@ -36,7 +36,7 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
             setLeft { onBackPressedDispatcher.onBackPressed() }
             setRight(R.drawable.ic_add_pink) {
                 @Suppress("DEPRECATION")
-                startActivityForResult(WallpaperUi.pickIntent("image/*", multiple = true), REQ_PICK)
+                startActivityForResult(Intent(this@StaticActivity, PhotoPickerActivity::class.java), REQ_PICK)
             }
         }
     }
