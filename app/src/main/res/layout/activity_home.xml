@@ -27,6 +27,7 @@
             <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:clipChildren="false"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimension_24">
 
@@ -36,6 +37,8 @@
                         android:layout_marginHorizontal="@dimen/dimension_22"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dimension_8"
+                        android:clipChildren="false"
+                        android:clipToPadding="false"
                 >
                     <ImageView
                             android:layout_width="match_parent"
