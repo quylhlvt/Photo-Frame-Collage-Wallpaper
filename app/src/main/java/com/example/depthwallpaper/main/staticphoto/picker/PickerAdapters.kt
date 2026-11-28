@@ -13,6 +13,7 @@ import com.example.depthwallpaper.databinding.ItemSelectedBinding
 class PhotoGridAdapter(
     private val isSelected: (GalleryImage) -> Boolean,
     private val onAdd: () -> Unit,
+    private val onLongPress: (GalleryImage) -> Unit,
     private val onClick: (GalleryImage) -> Unit,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var items: List<GalleryImage> = emptyList()
@@ -42,6 +43,7 @@ class PhotoGridAdapter(
         ThumbLoader.load(holder.b.image, image.uri, size)
         bindSelection(holder, image)
         holder.b.root.setOnClickListener { onClick(image) }
+        holder.b.root.setOnLongClickListener { onLongPress(image); true }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>) {

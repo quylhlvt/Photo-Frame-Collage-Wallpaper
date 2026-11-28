@@ -34,7 +34,7 @@ object ThumbLoader {
     }
 
     private fun decode(ctx: Context, uri: Uri, size: Int): Bitmap? = try {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && uri.scheme == "content") {
             ctx.contentResolver.loadThumbnail(uri, Size(size, size), null)
         } else {
             val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }

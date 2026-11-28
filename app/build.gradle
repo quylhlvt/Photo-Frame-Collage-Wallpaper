@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -78,4 +79,9 @@ dependencies {
     implementation ("com.github.lehongquyme:canvasShadow:release~v1.0.1")
     //dot
     implementation("com.tbuonomo:dotsindicator:5.1.0")
+
+    // Room: the photos the user added on the Choose photo screen.
+    implementation("androidx.room:room-runtime:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
+    ksp("androidx.room:room-compiler:2.7.2")
 }

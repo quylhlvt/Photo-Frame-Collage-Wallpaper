@@ -1,31 +1,30 @@
 package com.example.depthwallpaper.main.staticphoto.picker
 
+import android.app.Application
 import android.net.Uri
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import com.example.depthwallpaper.core.gallery.GalleryImage
+import com.example.depthwallpaper.core.gallery.toGalleryImage
+import com.example.depthwallpaper.data.AddedPhotoRepository
 
-/** The photos the user has added, and which of them are chosen (in the order they were chosen). */
-class PickerViewModel : ViewModel() {
-    private var nextId = 1L
+/** The added photos (kept in Room) and which of them are chosen right now, in the order they were chosen. */
+class PickerViewModel(app: Application) : AndroidViewModel(app) {
+    private val repo = AddedPhotoRepository(app)
 
-    private val _added = MutableLiveData<List<GalleryImage>>(emptyList())
-    val added: LiveData<List<GalleryImage>> = _added
+    val added: LiveData<List<GalleryImage>> = repo.photos.map { list -> list.map { it.toGalleryImage() } }
 
     private val _selected = MutableLiveData<List<GalleryImage>>(emptyList())
     val selected: LiveData<List<GalleryImage>> = _selected
 
     fun isSelected(image: GalleryImage) = _selected.value.orEmpty().any { it.id == image.id }
 
-    /** Adds new photos (skipping ones already there) and chooses them while there is room under [max]. */
-    fun add(uris: List<Uri>, max: Int) {
-        val known = _added.value.orEmpty().map { it.uri }.toSet()
-        val fresh = uris.filter { it !in known }.map { GalleryImage(nextId++, it) }
-        if (fresh.isEmpty()) return
-        _added.value = _added.value.orEmpty() + fresh
-        val room = (max - _selected.value.orEmpty().size).coerceAtLeast(0)
-        _selected.value = _selected.value.orEmpty() + fresh.take(room)
+    /** Saves the picked photos into the list. */
+    fun add(uris: List<Uri>) {
+        if (uris.isEmpty()) return
+        Thread { repo.add(uris) }.start()
     }
 
     /** Chooses or un-chooses a photo; false when choosing would go over [max]. */
@@ -37,7 +36,13 @@ class PickerViewModel : ViewModel() {
         return true
     }
 
-    /** Takes a photo out of the chosen ones (it stays in the grid). */
+    /** Takes a photo out of the chosen ones (it stays in the list). */
     fun unselect(image: GalleryImage) { _selected.value = _selected.value.orEmpty().filter { it.id != image.id } }
     fun clear() { _selected.value = emptyList() }
+
+    /** Deletes a photo from the list for good. */
+    fun delete(image: GalleryImage) {
+        unselect(image)
+        Thread { repo.remove(image.id) }.start()
+    }
 }

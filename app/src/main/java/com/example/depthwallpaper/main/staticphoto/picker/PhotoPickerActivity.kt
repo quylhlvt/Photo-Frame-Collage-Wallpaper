@@ -28,7 +28,7 @@ class PhotoPickerActivity : AbsBaseActivity<ActivityPhotoPickerBinding>(Activity
     private val maxPhotos get() = intent.getIntExtra(EXTRA_MAX, Collages.MAX_PHOTOS)
 
     override fun initView() {
-        grid = PhotoGridAdapter(isSelected = { vm.isSelected(it) }, onAdd = { openSystemPicker() }) { image ->
+        grid = PhotoGridAdapter(isSelected = { vm.isSelected(it) }, onAdd = { openSystemPicker() }, onLongPress = { confirmDelete(it) }) { image ->
             if (!vm.toggle(image, maxPhotos)) {
                 Toast.makeText(this, getString(R.string.max_photos, maxPhotos), Toast.LENGTH_SHORT).show()
             }
@@ -60,13 +60,21 @@ class PhotoPickerActivity : AbsBaseActivity<ActivityPhotoPickerBinding>(Activity
         }
     }
 
-    private val pickMany = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(MAX_PICK)) { vm.add(it, maxPhotos) }
-    private val pickOne = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri -> uri?.let { vm.add(listOf(it), maxPhotos) } }
+    private val pickMany = registerForActivityResult(ActivityResultContracts.PickMultipleVisualMedia(MAX_PICK)) { vm.add(it) }
 
     /** The system photo picker (PickVisualMedia): no storage permission needed. */
     private fun openSystemPicker() {
         val request = PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-        if (maxPhotos > 1) pickMany.launch(request) else pickOne.launch(request)
+        pickMany.launch(request)
+    }
+
+    /** Long press removes a photo from the saved list. */
+    private fun confirmDelete(image: com.example.depthwallpaper.core.gallery.GalleryImage) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setMessage(R.string.picker_delete_confirm)
+            .setPositiveButton(R.string.project_delete) { _, _ -> vm.delete(image) }
+            .setNegativeButton(R.string.project_cancel, null)
+            .show()
     }
 
     private fun finishWithPhotos() {

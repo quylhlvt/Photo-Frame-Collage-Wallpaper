@@ -69,7 +69,7 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
                 pendingLayout = layout.id
                 pendingTheme = theme.id
                 pendingCount = layout.count
-                openPicker(Collages.MAX_PHOTOS)
+                openPicker(layout.count)
             }
         }
         box.addView(CollagePreviewView(this).apply {
@@ -92,27 +92,31 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
         data.clipData?.let { for (i in 0 until it.itemCount) uris.add(it.getItemAt(i).uri) }
         if (uris.isEmpty()) data.data?.let { uris.add(it) }
         if (uris.isEmpty()) return
-        if (uris.size > Collages.MAX_PHOTOS) {
-            Toast.makeText(this, getString(R.string.max_photos, Collages.MAX_PHOTOS), Toast.LENGTH_SHORT).show()
+        val layoutId = pendingLayout
+        if (layoutId == null) {
+            // Started from "+": the number of photos decides which frames are offered.
+            startActivity(Intent(this, ChooseFrameActivity::class.java).apply { clipData = data.clipData })
+            return
         }
-        val chosen = uris.take(Collages.MAX_PHOTOS)
+        // A template was tapped: open it with the chosen photos.
+        val chosen = uris.take(pendingCount.coerceAtLeast(1))
         Thread {
-            val side = ImageUtils.sideForCount(chosen.size)
+            val side = ImageUtils.sideForCount(pendingCount.coerceAtLeast(chosen.size))
             val decoded = chosen.mapNotNull { ImageUtils.decodeUri(this, it, side) }
             runOnUiThread {
                 if (decoded.isEmpty()) {
                     Toast.makeText(this, R.string.load_failed, Toast.LENGTH_SHORT).show()
-                } else {
-                    // Fewer photos than the template has frames: repeat them so every frame is filled.
-                    val photos = if (pendingCount > decoded.size) List(pendingCount) { decoded[it % decoded.size] } else decoded
-                    PickedPhotos.put(photos)
-                    startActivity(
-                        Intent(this, CollageEditorActivity::class.java)
-                            .putExtra(CollageEditorActivity.EXTRA_COUNT, photos.size)
-                            .putExtra(CollageEditorActivity.EXTRA_LAYOUT, pendingLayout)
-                            .putExtra(CollageEditorActivity.EXTRA_THEME, pendingTheme),
-                    )
+                    return@runOnUiThread
                 }
+                // Fewer photos than the template has frames: repeat them so every frame is filled.
+                val photos = if (pendingCount > decoded.size) List(pendingCount) { decoded[it % decoded.size] } else decoded
+                PickedPhotos.put(photos)
+                startActivity(
+                    Intent(this, CollageEditorActivity::class.java)
+                        .putExtra(CollageEditorActivity.EXTRA_COUNT, photos.size)
+                        .putExtra(CollageEditorActivity.EXTRA_LAYOUT, layoutId)
+                        .putExtra(CollageEditorActivity.EXTRA_THEME, pendingTheme),
+                )
             }
         }.start()
     }
