@@ -99,13 +99,8 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
         val uris = PhotoPickerActivity.urisFrom(data)
         if (uris.isEmpty()) return
         val layoutId = pendingLayout
-        if (layoutId == null) {
-            // Started from "+": the number of photos decides which frames are offered.
-            startActivity(Intent(this, ChooseFrameActivity::class.java).putStringArrayListExtra(PhotoPickerActivity.EXTRA_PATHS, data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_PATHS)))
-            return
-        }
         // A template was tapped: open it with the chosen photos.
-        val chosen = uris.take(pendingCount.coerceAtLeast(1))
+        val chosen = if (layoutId == null) uris.take(Collages.MAX_PHOTOS) else uris.take(pendingCount.coerceAtLeast(1))
         Thread {
             val side = ImageUtils.sideForCount(pendingCount.coerceAtLeast(chosen.size))
             val decoded = chosen.mapNotNull { ImageUtils.decodeUri(this, it, side) }
@@ -120,7 +115,7 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
                 startActivity(
                     Intent(this, CollageEditorActivity::class.java)
                         .putExtra(CollageEditorActivity.EXTRA_COUNT, photos.size)
-                        .putExtra(CollageEditorActivity.EXTRA_LAYOUT, layoutId)
+                        .putExtra(CollageEditorActivity.EXTRA_LAYOUT, layoutId) // null from "+": the editor picks a layout for that many photos
                         .putExtra(CollageEditorActivity.EXTRA_THEME, pendingTheme),
                 )
             }

@@ -112,9 +112,6 @@
     <string name="photo_frame_ncollage_wallpaper">Photo Frame:\nCollage Wallpaper</string>
     <string name="picker_title">Choose photo</string>
     <string name="picker_delete_confirm">Remove this photo from your list?</string>
-    <string name="picker_choose_frame">Choose Frame</string>
-    <string name="picker_collage">Collage</string>
-    <string name="picker_next">Next</string>
     <string name="picker_add_image">Add image</string>
     <string name="picker_clear_all">Clear All</string>
     <string name="picker_none_selected">No items have been selected yet</string>
