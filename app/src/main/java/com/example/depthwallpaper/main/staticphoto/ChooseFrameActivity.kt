@@ -12,6 +12,7 @@ import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.databinding.ActivityChooseFrameBinding
+import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
 
 /**
  * "Choose Frame": after the photos were chosen with "+", pick one of the collage layouts made for that
@@ -24,8 +25,7 @@ class ChooseFrameActivity : AbsBaseActivity<ActivityChooseFrameBinding>(Activity
     private val theme get() = Collages.themes[0]
 
     override fun initView() {
-        val clip = intent.clipData
-        val uris = clip?.let { c -> (0 until c.itemCount).map { c.getItemAt(it).uri } }.orEmpty().take(Collages.MAX_PHOTOS)
+        val uris = PhotoPickerActivity.urisFrom(intent).take(Collages.MAX_PHOTOS)
         if (uris.isEmpty()) { finish(); return }
         layouts = Collages.layoutsFor(uris.size)
         binding.actionBar.apply {

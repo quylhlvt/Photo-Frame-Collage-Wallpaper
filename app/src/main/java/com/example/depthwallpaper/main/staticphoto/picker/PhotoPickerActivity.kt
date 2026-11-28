@@ -1,6 +1,5 @@
 package com.example.depthwallpaper.main.staticphoto.picker
 
-import android.content.ClipData
 import android.content.Intent
 import android.view.View
 import android.widget.Toast
@@ -80,16 +79,19 @@ class PhotoPickerActivity : AbsBaseActivity<ActivityPhotoPickerBinding>(Activity
     private fun finishWithPhotos() {
         val chosen = vm.selected.value.orEmpty()
         if (chosen.isEmpty()) return
-        val clip = ClipData.newUri(contentResolver, "photos", chosen.first().uri)
-        chosen.drop(1).forEach { clip.addItem(ClipData.Item(it.uri)) }
-        setResult(RESULT_OK, Intent().apply {
-            clipData = clip
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        })
+        // File paths, not Uris: a file:// Uri may not leave the app inside an Intent.
+        setResult(RESULT_OK, Intent().putStringArrayListExtra(EXTRA_PATHS, ArrayList(chosen.mapNotNull { it.uri.path })))
         finish()
     }
 
     companion object {
+        /** Result / hand-over extra: the chosen photos as file paths. */
+        const val EXTRA_PATHS = "paths"
+
+        /** The photos in [intent] as Uris (empty when there are none). */
+        fun urisFrom(intent: Intent?): List<android.net.Uri> =
+            intent?.getStringArrayListExtra(EXTRA_PATHS).orEmpty().map { android.net.Uri.fromFile(java.io.File(it)) }
+
         /** How many photos may be chosen (default: the collage maximum). */
         const val EXTRA_MAX = "max"
         private const val MAX_PICK = 20

@@ -29,6 +29,10 @@ class AddedPhotoRepository(context: Context) {
         }
     }
 
+    /** Up to [max] of the newest added photos, decoded small, for the previews in the lists; call from a background thread. */
+    fun previewBitmaps(side: Int, max: Int = 4): List<android.graphics.Bitmap> =
+        dao.latest(max).mapNotNull { com.example.depthwallpaper.core.ImageUtils.decodeUri(app, Uri.fromFile(File(it.path)), side) }
+
     /** Removes one photo from the list and deletes its copy; call from a background thread. */
     fun remove(id: Long) {
         dao.find(id)?.let { File(it.path).delete() }

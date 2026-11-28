@@ -2,7 +2,6 @@ package com.example.depthwallpaper.main.staticphoto
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.net.Uri
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -13,6 +12,7 @@ import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.SamplePhoto
 import com.example.depthwallpaper.core.setLeft
+import com.example.depthwallpaper.data.AddedPhotoRepository
 import com.example.depthwallpaper.core.setRight
 import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.databinding.ActivityStaticBinding
@@ -26,10 +26,18 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
     private var pendingCount = 0
 
     override fun initView() {
+        // The previews show the photos the user added (the newest ones); the sample photo when there are none.
         val sample = SamplePhoto.build(resources, 4)
+        Thread {
+            val mine = AddedPhotoRepository(this).previewBitmaps(400)
+            runOnUiThread { buildGrid(mine.ifEmpty { listOfNotNull(sample) }) }
+        }.start()
+    }
+
+    private fun buildGrid(pool: List<Bitmap>) {
         Collages.presets.chunked(2).forEach { pair ->
             val row = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
-            pair.forEach { p -> row.addView(templateCard(p, sample), LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)) }
+            pair.forEach { p -> row.addView(templateCard(p, pool), LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)) }
             if (pair.size == 1) row.addView(View(this), LinearLayout.LayoutParams(0, 1, 1f))
             binding.grid.addView(row)
         }
@@ -56,7 +64,7 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
         )
     }
 
-    private fun templateCard(p: CollagePreset, sample: Bitmap?): View {
+    private fun templateCard(p: CollagePreset, pool: List<Bitmap>): View {
         val layout = Collages.find(p.count, p.key)
         val theme = Collages.theme(p.themeId) ?: Collages.themes[0]
         val box = LinearLayout(this).apply {
@@ -74,7 +82,7 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
         }
         box.addView(CollagePreviewView(this).apply {
             this.layout = layout; this.theme = theme
-            photos = List(layout.count) { sample }
+            photos = List(layout.count) { pool.getOrNull(it % pool.size.coerceAtLeast(1)) }
         }, LinearLayout.LayoutParams((dp(300) * 9f / 19.5f).toInt(), dp(300)))
         box.addView(TextView(this).apply {
             text = getString(R.string.photo_count, layout.count); textSize = 13f; alpha = 0.7f
@@ -88,14 +96,12 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
         @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode != REQ_PICK || resultCode != RESULT_OK || data == null) return
-        val uris = mutableListOf<Uri>()
-        data.clipData?.let { for (i in 0 until it.itemCount) uris.add(it.getItemAt(i).uri) }
-        if (uris.isEmpty()) data.data?.let { uris.add(it) }
+        val uris = PhotoPickerActivity.urisFrom(data)
         if (uris.isEmpty()) return
         val layoutId = pendingLayout
         if (layoutId == null) {
             // Started from "+": the number of photos decides which frames are offered.
-            startActivity(Intent(this, ChooseFrameActivity::class.java).apply { clipData = data.clipData })
+            startActivity(Intent(this, ChooseFrameActivity::class.java).putStringArrayListExtra(PhotoPickerActivity.EXTRA_PATHS, data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_PATHS)))
             return
         }
         // A template was tapped: open it with the chosen photos.

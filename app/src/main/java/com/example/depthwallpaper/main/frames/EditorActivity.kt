@@ -20,6 +20,7 @@ import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.WallpaperStore
 import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.databinding.ActivityFrameEditorBinding
+import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
 
 /** Pick photos from the device into a frame, save, then set it as the wallpaper. */
 class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>(ActivityFrameEditorBinding::inflate) {
@@ -59,9 +60,7 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>(ActivityFrame
         }
 
         // Photos chosen on the "Choose photo" screen before the editor opened.
-        intent.clipData?.let { clip ->
-            applyUris((0 until clip.itemCount).map { clip.getItemAt(it).uri }, -1)
-        }
+        PhotoPickerActivity.urisFrom(intent).takeIf { it.isNotEmpty() }?.let { applyUris(it, -1) }
 
         binding.preview.apply {
             template = frame

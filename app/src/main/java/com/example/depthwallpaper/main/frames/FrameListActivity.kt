@@ -1,6 +1,5 @@
 package com.example.depthwallpaper.main.frames
 
-import android.content.ClipData
 import android.content.Intent
 import android.view.Gravity
 import android.widget.LinearLayout
@@ -10,6 +9,7 @@ import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.SamplePhoto
+import com.example.depthwallpaper.data.AddedPhotoRepository
 import com.example.depthwallpaper.databinding.ActivityFrameListBinding
 import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
 
@@ -22,7 +22,15 @@ class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFram
             setTitle(getString(R.string.choose_frame))
             setLeft { onBackPressedDispatcher.onBackPressed() }
         }
+        // The previews show the photos the user added (the newest ones); the sample photo when there are none.
         val sample = SamplePhoto.build(resources, 4)
+        Thread {
+            val mine = AddedPhotoRepository(this).previewBitmaps(400)
+            runOnUiThread { buildList(mine.ifEmpty { listOfNotNull(sample) }) }
+        }.start()
+    }
+
+    private fun buildList(pool: List<android.graphics.Bitmap>) {
         for (frame in FrameTemplates.all) {
             val row = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
@@ -42,7 +50,7 @@ class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFram
             }
             row.addView(FramePreviewView(this).apply {
                 template = frame
-                photos = List(frame.slots.size) { sample }
+                photos = List(frame.slots.size) { pool.getOrNull(it % pool.size.coerceAtLeast(1)) }
             }, LinearLayout.LayoutParams((dp(220) * 9f / 19.5f).toInt(), dp(220)))
             row.addView(LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
@@ -66,14 +74,9 @@ class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFram
         super.onActivityResult(requestCode, resultCode, data)
         val frameId = pendingFrame
         if (requestCode != REQ_PICK || resultCode != RESULT_OK || data == null || frameId == null) return
-        // Hand the chosen photos on to the editor (read access travels with the ClipData).
-        val clip = data.clipData ?: data.data?.let { ClipData.newRawUri("photo", it) } ?: return
-        startActivity(
-            Intent(this, EditorActivity::class.java).putExtra(EXTRA_FRAME, frameId).apply {
-                clipData = clip
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            },
-        )
+        val paths = data.getStringArrayListExtra(PhotoPickerActivity.EXTRA_PATHS) ?: return
+        // Hand the chosen photos on to the editor .
+        startActivity(Intent(this, EditorActivity::class.java).putExtra(EXTRA_FRAME, frameId).putStringArrayListExtra(PhotoPickerActivity.EXTRA_PATHS, paths))
     }
 
     companion object {

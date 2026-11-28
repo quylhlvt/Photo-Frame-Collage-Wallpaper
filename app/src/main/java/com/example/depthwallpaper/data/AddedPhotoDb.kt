@@ -24,6 +24,9 @@ interface AddedPhotoDao {
     @Query("SELECT * FROM added_photo ORDER BY addedAt DESC, id DESC")
     fun observeAll(): LiveData<List<AddedPhoto>>
 
+    @Query("SELECT * FROM added_photo ORDER BY addedAt DESC, id DESC LIMIT :n")
+    fun latest(n: Int): List<AddedPhoto>
+
     @Insert
     fun insert(photo: AddedPhoto): Long
 
