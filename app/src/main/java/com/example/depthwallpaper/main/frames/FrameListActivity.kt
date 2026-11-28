@@ -11,7 +11,7 @@ import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.SamplePhoto
 import com.example.depthwallpaper.databinding.ActivityFrameListBinding
-import com.example.depthwallpaper.core.WallpaperUi
+import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
 
 /** Mode 2: list of frames; tap one to open the editor. */
 class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFrameListBinding::inflate) {
@@ -33,7 +33,11 @@ class FrameListActivity : AbsBaseActivity<ActivityFrameListBinding>(ActivityFram
                 setOnClickListener {
                     pendingFrame = frame.id
                     @Suppress("DEPRECATION")
-                    startActivityForResult(WallpaperUi.pickPhotosIntent(frame.slots.size), REQ_PICK)
+                    startActivityForResult(
+                        Intent(this@FrameListActivity, PhotoPickerActivity::class.java)
+                            .putExtra(PhotoPickerActivity.EXTRA_MAX, frame.slots.size),
+                        REQ_PICK,
+                    )
                 }
             }
             row.addView(FramePreviewView(this).apply {

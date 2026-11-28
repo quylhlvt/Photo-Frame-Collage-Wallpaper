@@ -26,24 +26,6 @@
             android:paddingBottom="@dimen/dimension_16"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="3" />
-
-        <TextView
-            android:id="@+id/emptyText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/picker_empty"
-            android:textColor="#8A8A99"
-            android:textSize="@dimen/text_size_14"
-            android:visibility="gone" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/folders"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#F2F6F7"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </FrameLayout>
 
     <LinearLayout

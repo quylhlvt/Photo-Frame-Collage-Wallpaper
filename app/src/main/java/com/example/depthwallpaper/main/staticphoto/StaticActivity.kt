@@ -12,14 +12,19 @@ import com.example.depthwallpaper.R
 import com.example.depthwallpaper.base.AbsBaseActivity
 import com.example.depthwallpaper.core.ImageUtils
 import com.example.depthwallpaper.core.SamplePhoto
-import com.example.depthwallpaper.core.WallpaperUi
 import com.example.depthwallpaper.core.setLeft
 import com.example.depthwallpaper.core.setRight
 import com.example.depthwallpaper.core.setTitle
 import com.example.depthwallpaper.databinding.ActivityStaticBinding
+import com.example.depthwallpaper.main.staticphoto.picker.PhotoPickerActivity
 
 /** Mode 1 (DIY): ready-made collage templates. Tap one to edit it, or tap "+" to start from your own photos. */
 class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBinding::inflate) {
+    /** The template that was tapped (null: started from "+"), kept while "Choose photo" is open. */
+    private var pendingLayout: String? = null
+    private var pendingTheme: String? = null
+    private var pendingCount = 0
+
     override fun initView() {
         val sample = SamplePhoto.build(resources, 4)
         Collages.presets.chunked(2).forEach { pair ->
@@ -35,10 +40,20 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
             setTitle(getString(R.string.diy))
             setLeft { onBackPressedDispatcher.onBackPressed() }
             setRight(R.drawable.ic_add_pink) {
-                @Suppress("DEPRECATION")
-                startActivityForResult(WallpaperUi.pickPhotosIntent(Collages.MAX_PHOTOS), REQ_PICK)
+                pendingLayout = null
+                pendingTheme = null
+                pendingCount = 0
+                openPicker(Collages.MAX_PHOTOS)
             }
         }
+    }
+
+    private fun openPicker(max: Int) {
+        @Suppress("DEPRECATION")
+        startActivityForResult(
+            Intent(this, PhotoPickerActivity::class.java).putExtra(PhotoPickerActivity.EXTRA_MAX, max),
+            REQ_PICK,
+        )
     }
 
     private fun templateCard(p: CollagePreset, sample: Bitmap?): View {
@@ -49,13 +64,12 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
             gravity = Gravity.CENTER_HORIZONTAL
             setPadding(dp(6), dp(6), dp(6), dp(10))
             isClickable = true
+            // A template first goes to "Choose photo", then opens in the editor with those photos.
             setOnClickListener {
-                startActivity(
-                    Intent(this@StaticActivity, CollageEditorActivity::class.java)
-                        .putExtra(CollageEditorActivity.EXTRA_COUNT, layout.count)
-                        .putExtra(CollageEditorActivity.EXTRA_LAYOUT, layout.id)
-                        .putExtra(CollageEditorActivity.EXTRA_THEME, theme.id),
-                )
+                pendingLayout = layout.id
+                pendingTheme = theme.id
+                pendingCount = layout.count
+                openPicker(layout.count)
             }
         }
         box.addView(CollagePreviewView(this).apply {
@@ -89,8 +103,15 @@ class StaticActivity : AbsBaseActivity<ActivityStaticBinding>(ActivityStaticBind
                 if (decoded.isEmpty()) {
                     Toast.makeText(this, R.string.load_failed, Toast.LENGTH_SHORT).show()
                 } else {
-                    PickedPhotos.put(decoded)
-                    startActivity(Intent(this, CollageEditorActivity::class.java).putExtra(CollageEditorActivity.EXTRA_COUNT, decoded.size))
+                    // Fewer photos than the template has frames: repeat them so every frame is filled.
+                    val photos = if (pendingCount > decoded.size) List(pendingCount) { decoded[it % decoded.size] } else decoded
+                    PickedPhotos.put(photos)
+                    startActivity(
+                        Intent(this, CollageEditorActivity::class.java)
+                            .putExtra(CollageEditorActivity.EXTRA_COUNT, photos.size)
+                            .putExtra(CollageEditorActivity.EXTRA_LAYOUT, pendingLayout)
+                            .putExtra(CollageEditorActivity.EXTRA_THEME, pendingTheme),
+                    )
                 }
             }
         }.start()
