@@ -58,6 +58,11 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>(ActivityFrame
             bgImage = saved.bgImage
         }
 
+        // Photos chosen on the "Choose photo" screen before the editor opened.
+        intent.clipData?.let { clip ->
+            applyUris((0 until clip.itemCount).map { clip.getItemAt(it).uri }, -1)
+        }
+
         binding.preview.apply {
             template = frame
             photos = this@EditorActivity.photos
@@ -126,7 +131,11 @@ class EditorActivity : AbsBaseActivity<ActivityFrameEditorBinding>(ActivityFrame
         data.clipData?.let { for (i in 0 until it.itemCount) uris.add(it.getItemAt(i).uri) }
         if (uris.isEmpty()) data.data?.let { uris.add(it) }
         if (uris.isEmpty()) return
-        val slot = pendingSlot
+        applyUris(uris, pendingSlot)
+    }
+
+    /** Decodes the chosen photos and puts them in [slot] (-1: fill every frame, repeating if fewer). */
+    private fun applyUris(uris: List<Uri>, slot: Int) {
         Thread {
             val limit = if (slot != -1) 1 else frame.slots.size
             val decoded = uris.take(limit).mapNotNull { ImageUtils.decodeUri(this, it) }

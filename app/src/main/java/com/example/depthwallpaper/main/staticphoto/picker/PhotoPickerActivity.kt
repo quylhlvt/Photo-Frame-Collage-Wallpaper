@@ -25,13 +25,14 @@ import com.example.depthwallpaper.main.staticphoto.Collages
 class PhotoPickerActivity : AbsBaseActivity<ActivityPhotoPickerBinding>(ActivityPhotoPickerBinding::inflate) {
     private val vm: PickerViewModel by viewModels()
     private lateinit var grid: PhotoGridAdapter
+    private val maxPhotos get() = intent.getIntExtra(EXTRA_MAX, Collages.MAX_PHOTOS)
     private val readPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
         Manifest.permission.READ_MEDIA_IMAGES else Manifest.permission.READ_EXTERNAL_STORAGE
 
     override fun initView() {
         grid = PhotoGridAdapter(isSelected = { vm.isSelected(it) }) { image ->
-            if (!vm.toggle(image, Collages.MAX_PHOTOS)) {
-                Toast.makeText(this, getString(R.string.max_photos, Collages.MAX_PHOTOS), Toast.LENGTH_SHORT).show()
+            if (!vm.toggle(image, maxPhotos)) {
+                Toast.makeText(this, getString(R.string.max_photos, maxPhotos), Toast.LENGTH_SHORT).show()
             }
         }
         val folderAdapter = FolderAdapter { vm.openFolder(it) }
@@ -134,5 +135,9 @@ class PhotoPickerActivity : AbsBaseActivity<ActivityPhotoPickerBinding>(Activity
         return false
     }
 
-    private companion object { const val REQ = 2001 }
+    companion object {
+        /** How many photos may be chosen (default: the collage maximum). */
+        const val EXTRA_MAX = "max"
+        private const val REQ = 2001
+    }
 }

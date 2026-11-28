@@ -9,6 +9,7 @@ import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.provider.MediaStore
 import android.graphics.Outline
 import android.util.AttributeSet
 import android.view.View
@@ -58,6 +59,19 @@ object WallpaperUi {
             activity.startActivity(Intent(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER))
         }
     }
+
+    /**
+     * Pick up to [max] photos from the device without any storage permission: the system photo picker
+     * on Android 13+, the document picker before that.
+     */
+    fun pickPhotosIntent(max: Int): Intent =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Intent(MediaStore.ACTION_PICK_IMAGES).apply {
+                if (max > 1) putExtra(MediaStore.EXTRA_PICK_IMAGES_MAX, max.coerceAtMost(MediaStore.getPickImagesMaxLimit()))
+            }
+        } else {
+            pickIntent("image/*", multiple = max > 1)
+        }
 
     fun pickIntent(mime: String, multiple: Boolean = false): Intent =
         Intent.createChooser(
